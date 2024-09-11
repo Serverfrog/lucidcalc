@@ -5,10 +5,10 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>eu.ggnet.lucidcalc</groupId>
+    <groupId>de.serverfrog.lucidcalc</groupId>
     <artifactId>lucidcalc</artifactId>
     <version>1.1</version>
-    <name>GG-Net LucidCalc</name>
+    <name>LucidCalc</name>
 
     <description>A simple wrapper to get raw data (lists and fields) into a calc document (xls, later xlsx or odt)</description>
 
