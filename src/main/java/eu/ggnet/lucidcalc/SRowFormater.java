@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -24,11 +24,11 @@ package eu.ggnet.lucidcalc;
 public interface SRowFormater<T> {
 
     /**
-     * Returns a possible null Format for the a CCell
+     * Returns a possible null Format for the CCell
      *
      * @param relativeRowIndex the relative row index (start counting at the parent object)
-     * @param lineModel the lineModel
-     * @return a possible null Format for the a CCell
+     * @param lineModel        the lineModel
+     * @return a possible null Format for the CCell
      */
     CFormat getFormat(int relativeRowIndex, T lineModel);
 

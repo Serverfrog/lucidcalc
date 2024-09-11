@@ -16,19 +16,28 @@
  */
 package eu.ggnet.lucidcalc.jexcel;
 
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.ggnet.lucidcalc.LucidCalcReader;
-
-import jxl.*;
+import jxl.Cell;
+import jxl.DateCell;
+import jxl.NumberCell;
+import jxl.Sheet;
+import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import jxl.read.biff.BlankCell;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * The most KIS tool for reading plain calc docs.
@@ -43,9 +52,8 @@ import jxl.read.biff.BlankCell;
  * @author oliver.guenther
  */
 // TODO: Unittest
-public class JExcelLucidCalcReader implements LucidCalcReader {
-
-    private final static Logger L = LoggerFactory.getLogger(JExcelLucidCalcReader.class);
+@Slf4j
+public class JExcelReader implements LucidCalcReader {
 
     /**
      * Indicator to overjump the first line
@@ -61,14 +69,14 @@ public class JExcelLucidCalcReader implements LucidCalcReader {
      * the columns to be read
      * (e.g. {0,1,5} => resultlist has 3 elements 1 => column 0, 2 => column 1, 3 => column 5)
      */
-    private Map<Integer, Class<? extends Object>> columns;
+    private final Map<Integer, Class<? extends Object>> columns;
 
-    private List<String> errors;
+    private final List<String> errors;
 
     /**
      * Default constructor, sets, headline and trim = true.
      */
-    public JExcelLucidCalcReader() {
+    public JExcelReader() {
         headline = true;
         trim = true;
         columns = new HashMap<>();
@@ -84,7 +92,7 @@ public class JExcelLucidCalcReader implements LucidCalcReader {
      * @return the JExcelLucidCalcReader
      */
     @Override
-    public JExcelLucidCalcReader addColumn(int id, Class<? extends Object> type) {
+    public LucidCalcReader addColumn(int id, Class<? extends Object> type) {
         this.columns.put(id, type);
         return this;
     }
@@ -153,16 +161,16 @@ public class JExcelLucidCalcReader implements LucidCalcReader {
     private <U> List<U> read(Workbook doc, Class<U> clazz) {
         Constructor constructor = null;
         for (Constructor c : clazz.getConstructors()) {
-            if ( c.getParameterTypes().length == columns.size() ) {
+            if (c.getParameterTypes().length == columns.size()) {
                 constructor = c;
                 break;
             }
         }
-        if ( constructor == null ) throw new RuntimeException(clazz + " doesnt have a constructor with " + columns.size() + " Parameters");
+        if (constructor == null) throw new RuntimeException(clazz + " doesnt have a constructor with " + columns.size() + " Parameters");
         List<U> result = new ArrayList<>();
         for (List<? extends Object> line : read(doc)) {
             try {
-                L.debug("Creating Instance of {} with {}", clazz, line);
+                log.debug("Creating Instance of {} with {}", clazz, line);
                 U u = clazz.cast(constructor.newInstance(line.toArray()));
                 result.add(u);
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -171,9 +179,9 @@ public class JExcelLucidCalcReader implements LucidCalcReader {
                     clazzes.add(object == null ? null : object.getClass());
                 }
                 throw new RuntimeException("Could not create an Instance of " + clazz
-                        + "\nParamters(size=" + line.size() + "):" + line
-                        + "\nClasses(size=" + clazzes.size() + "):" + clazzes
-                        + "\nConstructorTypes(size=" + constructor.getParameterTypes().length + "):" + Arrays.toString(constructor.getParameterTypes()), ex);
+                    + "\nParamters(size=" + line.size() + "):" + line
+                    + "\nClasses(size=" + clazzes.size() + "):" + clazzes
+                    + "\nConstructorTypes(size=" + constructor.getParameterTypes().length + "):" + Arrays.toString(constructor.getParameterTypes()), ex);
             }
         }
         return result;
@@ -184,7 +192,6 @@ public class JExcelLucidCalcReader implements LucidCalcReader {
      * <p>
      * TODO: Inference Mechanism only counts the Parameters, this can be done better and more secure.
      *
-     *
      * @param <U>      the type
      * @param file     the file to be read
      * @param instance intance
@@ -193,7 +200,7 @@ public class JExcelLucidCalcReader implements LucidCalcReader {
     @SuppressWarnings("unchecked")
     @Override
     public <U> List<U> read(File file, U instance) {
-        return (List<U>)read(file, instance.getClass());
+        return (List<U>) read(file, instance.getClass());
     }
 
     @Override
@@ -218,52 +225,54 @@ public class JExcelLucidCalcReader implements LucidCalcReader {
     }
 
     /**
-     * Reads an xls file and returns the contents as list of lists.
+     * Reads a xls file and returns the contents as list of lists.
      *
-     * @param file the file to be read
+     * @param doc the file to be read
      * @return the list
      */
     // TODO: Check null file
     private List<List<? extends Object>> read(Workbook doc) {
-        if ( columns.isEmpty() ) columns.put(0, String.class); // If no columns are defined, just read in the first as String
+        if (columns.isEmpty()) columns.put(0, String.class); // If no columns are defined, just read in the first as String
 
         List<List<? extends Object>> result = new ArrayList<>();
         Sheet sheet = doc.getSheet(0);
         for (int rowIndex = (headline ? 1 : 0); rowIndex < sheet.getRows(); rowIndex++) {
-            if ( isEmptyRow(sheet, rowIndex) ) continue; // Ignore empty rows
+            if (isEmptyRow(sheet, rowIndex)) continue; // Ignore empty rows
             List<Object> line = new ArrayList<>();
             result.add(line);
             for (Integer columnIndex : new TreeSet<>(columns.keySet())) {
                 Cell cell = sheet.getCell(columnIndex, rowIndex);
-                L.debug("Reading Cell (c=" + columnIndex + ",r=" + rowIndex + ",type=" + cell.getClass().getSimpleName() + ")=" + cell.getContents());
+                if (log.isDebugEnabled()) {
+                    log.debug(String.format("Reading Cell (c=%d,r=%d,type=%s)=%s", columnIndex, rowIndex, cell.getClass().getSimpleName(), cell.getContents()));
+                }
                 Class<? extends Object> type = columns.get(columnIndex);
-                if ( cell instanceof BlankCell ) {
+                if (cell instanceof BlankCell) {
                     line.add(null);
-                } else if ( type.equals(String.class) ) {
+                } else if (type.equals(String.class)) {
                     String value = cell.getContents();
-                    if ( trim && value != null ) value = value.trim();
+                    if (trim && value != null) value = value.trim();
                     line.add(value);
-                } else if ( type.equals(Double.class) ) {
+                } else if (type.equals(Double.class)) {
                     try {
-                        Double value = ((NumberCell)cell).getValue();
+                        Double value = ((NumberCell) cell).getValue();
                         line.add(value);
                     } catch (ClassCastException cce) {
                         errors.add("Error(row=" + rowIndex + ",column=" + columnIndex + ",value=" + cell.getContents() + ") Type is not Double, ErrorMessage(" + cce.getMessage() + ")");
                         line.add(-9999999.99);
                     }
-                } else if ( type.equals(Integer.class) ) {
+                } else if (type.equals(Integer.class)) {
                     try {
-                        Double value = ((NumberCell)cell).getValue();
+                        Double value = ((NumberCell) cell).getValue();
                         line.add(value.intValue());
                     } catch (ClassCastException cce) {
                         errors.add("Error(row=" + rowIndex + ",column=" + columnIndex + ",value=" + cell.getContents() + ") Type is not Integer, ErrorMessage(" + cce.getMessage() + ")");
                         line.add(-9999999);
                     }
-                } else if ( type.equals(Date.class) ) {
+                } else if (type.equals(Date.class)) {
                     try {
-                        if ( cell.getContents() == null || cell.getContents().isEmpty() ) line.add(null);
+                        if (cell.getContents() == null || cell.getContents().isEmpty()) line.add(null);
                         else {
-                            Date value = ((DateCell)cell).getDate();
+                            Date value = ((DateCell) cell).getDate();
                             line.add(value);
                         }
                     } catch (ClassCastException cce) {
@@ -280,13 +289,11 @@ public class JExcelLucidCalcReader implements LucidCalcReader {
     }
 
     private boolean isEmptyRow(Sheet sheet, int i) {
-        for (Integer column : columns.keySet()) {
-            Cell c = sheet.getCell(column, i);
-            if ( c instanceof BlankCell ) continue;
-            if ( c.getContents() == null ) continue;
-            if ( c.getContents().trim().equals("") ) continue;
-            return false;
-        }
-        return true;
+        return columns.keySet().stream()
+            .map(column -> sheet.getCell(column, i))
+            .filter(c -> !(c instanceof BlankCell))
+            .filter(c -> c.getContents() != null)
+            .allMatch(c -> c.getContents()
+                .trim().isEmpty());
     }
 }

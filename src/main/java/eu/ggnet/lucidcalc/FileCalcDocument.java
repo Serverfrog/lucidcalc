@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@ public class FileCalcDocument extends CCalcDocument {
 
     private File file;
 
-    private String fileName;
+    private final String fileName;
 
     public FileCalcDocument(String fileName) {
         this.fileName = Objects.requireNonNull(fileName, "Filename must not be null");
@@ -34,9 +34,10 @@ public class FileCalcDocument extends CCalcDocument {
 
     @Override
     public File getFile() {
-        if ( file == null ) {
+        if (file == null) {
             file = new File(fileName);
-            if ( file.exists() ) {
+            if (file.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 file.delete();
             }
         }

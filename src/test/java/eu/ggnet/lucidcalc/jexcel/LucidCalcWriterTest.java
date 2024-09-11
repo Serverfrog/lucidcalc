@@ -9,9 +9,9 @@ import java.awt.Color;
 import java.io.File;
 import java.util.*;
 
-import org.junit.jupiter.api.Test;
-
 import eu.ggnet.lucidcalc.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import static eu.ggnet.lucidcalc.CFormat.FontStyle.BOLD;
 import static eu.ggnet.lucidcalc.CFormat.HorizontalAlignment.LEFT;
@@ -25,11 +25,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author oliver.guenther
  */
-public class JExcelWriterTest {
+public class LucidCalcWriterTest {
 
-    private final static Random R = new Random();
+    private static final Random R = new Random();
 
-    public final static CFormat EURO = new CFormat(RIGHT, CURRENCY_EURO);
+    public static final CFormat EURO = new CFormat(RIGHT, CURRENCY_EURO);
 
     public static class SResult {
 
@@ -44,14 +44,17 @@ public class JExcelWriterTest {
         public SCell sum4;
     }
 
-    @Test
-    public void verifyCreationOfDemoTable() {
-        File tempFile = generateDemoTableAsTempFile();
+    @ParameterizedTest
+    @EnumSource(LucidCalc.Backend.class)
+    void verifyCreationOfDemoTable(LucidCalc.Backend backend) {
+        File tempFile = generateDemoTableAsTempFile(backend);
         assertThat(tempFile).exists(); // TODO: A read of the excel file an verification of the contents would be nice.
         tempFile.deleteOnExit();
     }
 
-    public static File generateDemoTableAsTempFile() {
+    public static File generateDemoTableAsTempFile(LucidCalc.Backend backend) {
+
+
         STable one = new STable();
         one.setTableFormat(new CFormat("Verdana", 10, new CBorder(Color.BLACK, CBorder.LineStyle.THIN)));
         one.setHeadlineFormat(new CFormat(CFormat.FontStyle.BOLD, Color.BLACK, Color.YELLOW, CFormat.HorizontalAlignment.CENTER, CFormat.VerticalAlignment.MIDDLE));
@@ -90,8 +93,9 @@ public class JExcelWriterTest {
 
         CCalcDocument doc = new TempCalcDocument("DemoFile_");
         doc.add(sheet);
-
-        return new JExcelLucidCalcWriter().write(doc);
+        final LucidCalcWriter writer = LucidCalc.createWriter(backend);
+        assertThat(writer).isNotNull();
+        return writer.write(doc);
     }
 
     /**
@@ -120,8 +124,6 @@ public class JExcelWriterTest {
      * Create the Summary Block at the End.
      * <p/>
      * @param table        The Stable where all the data exist.
-     * @param startingDate the startnig date of the Report.
-     * @param endingDate   the ending date of the Report.
      * @return a SResult Block with the Summary.
      */
     private static SResult createSummary(STable table) {

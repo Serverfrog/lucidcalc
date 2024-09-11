@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,12 +16,15 @@
  */
 package eu.ggnet.lucidcalc;
 
+import lombok.Getter;
+
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A Composite of cells and Metainformations.
+ * A Composite of cells and Metainformation.
  */
+@Getter
 public class CCellComposite {
 
     protected Set<CCell> cells;
@@ -29,9 +32,9 @@ public class CCellComposite {
     protected Set<CRowView> rowViews;
 
     public CCellComposite() {
-        cells = new HashSet<CCell>();
-        columnViews = new HashSet<CColumnView>();
-        rowViews = new HashSet<CRowView>();
+        cells = new HashSet<>();
+        columnViews = new HashSet<>();
+        rowViews = new HashSet<>();
     }
 
     public CCellComposite(Set<CCell> cells) {
@@ -44,15 +47,4 @@ public class CCellComposite {
         if (rowViews != null) this.rowViews = rowViews;
     }
 
-    public Set<CCell> getCells() {
-        return cells;
-    }
-
-    public Set<CColumnView> getColumnViews() {
-        return columnViews;
-    }
-
-    public Set<CRowView> getRowViews() {
-        return rowViews;
-    }
 }

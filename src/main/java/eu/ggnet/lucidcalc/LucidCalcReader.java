@@ -20,10 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import eu.ggnet.lucidcalc.jexcel.JExcelLucidCalcReader;
-
 /**
- *
  * @author oliver.guenther
  */
 public interface LucidCalcReader {
@@ -36,7 +33,7 @@ public interface LucidCalcReader {
      * @param type the Type of the column. Allowed Values: String,Double,Integer
      * @return the JExcelLucidCalcReader
      */
-    JExcelLucidCalcReader addColumn(int id, Class<? extends Object> type);
+    LucidCalcReader addColumn(int id, Class<? extends Object> type);
 
     List<String> getErrors();
 
@@ -44,13 +41,16 @@ public interface LucidCalcReader {
 
     boolean isHeadline();
 
+    void setHeadline(boolean headline);
+
     boolean isTrim();
+
+    void setTrim(boolean trim);
 
     /**
      * Reads an xls file and returns the contests as List of Instances of Type U
      * <p>
      * TODO: Inference Mechanism only counts the Parameters, this can be done better and more secure.
-     *
      *
      * @param <U>   the type
      * @param file  the file to be read
@@ -65,7 +65,6 @@ public interface LucidCalcReader {
      * Reads an xls file and returns the contests as List of Instances of Type U
      * <p>
      * TODO: Inference Mechanism only counts the Parameters, this can be done better and more secure.
-     *
      *
      * @param <U>      the type
      * @param file     the file to be read
@@ -82,8 +81,4 @@ public interface LucidCalcReader {
      * @param columns the columns
      */
     void setColumns(int... columns);
-
-    void setHeadline(boolean headline);
-
-    void setTrim(boolean trim);
 }

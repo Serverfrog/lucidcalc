@@ -19,7 +19,6 @@ package eu.ggnet.lucidcalc;
 import java.io.File;
 
 /**
- *
  * @author oliver.guenther
  */
 public interface LucidCalcWriter {
@@ -27,6 +26,7 @@ public interface LucidCalcWriter {
     /**
      * Writes a document to a file.
      * <p>
+     *
      * @param document the document
      * @return the written file.
      */

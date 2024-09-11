@@ -16,7 +16,11 @@
  */
 package eu.ggnet.lucidcalc;
 
-import java.awt.Color;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.awt.*;
+import java.util.Objects;
 
 /**
  * The Format for any TemplateElement.
@@ -31,75 +35,38 @@ import java.awt.Color;
  * </ul>
  * Null values mean no override.
  */
+@AllArgsConstructor
 public class CFormat {
 
-    public static enum FontStyle {
+    @Getter
+    private final String name;
 
-        BOLD, ITALIC, BOLD_ITALIC, NORMAL
-    }
+    @Getter
+    private final Integer size;
 
-    public static enum HorizontalAlignment {
+    @Getter
+    private final FontStyle style;
 
-        LEFT, CENTER, RIGHT
-    }
+    @Getter
+    private final Color foreground;
 
-    public static enum VerticalAlignment {
+    @Getter
+    private final Color background;
 
-        TOP, MIDDLE, BOTTOM
-    }
+    @Getter
+    private final HorizontalAlignment horizontalAlignment;
 
-    public static enum Representation {
+    @Getter
+    private final VerticalAlignment verticalAlignment;
 
-        DEFAULT, TEXT, PERCENT_INTEGER, PERCENT_FLOAT, SHORT_DATE, CURRENCY_EURO
-    }
+    @Getter
+    private final Representation representation;
 
-    /**
-     * Fills values in the primary format which are null with values of the secondary format
-     *
-     * @param primary   the primary format
-     * @param secondary the secondary format
-     * @return a combination of both
-     */
-    public static CFormat combine(CFormat primary, CFormat secondary) {
-        if ( primary == null && secondary == null ) return null;
-        else if ( secondary == null ) return primary;
-        else if ( primary == null ) return secondary;
-        return primary.fillNull(secondary);
-    }
+    @Getter
+    private final CBorder border;
 
-    private String name;
+    private final Boolean wrap;
 
-    private Integer size;
-
-    private FontStyle style;
-
-    private Color foreground;
-
-    private Color background;
-
-    private HorizontalAlignment horizontalAlignment;
-
-    private VerticalAlignment verticalAlignment;
-
-    private Representation representation;
-
-    private CBorder border;
-
-    private Boolean wrap;
-
-    public CFormat(String name, Integer size, FontStyle style, Color foreground, Color background, HorizontalAlignment horizontalAlignment,
-                   VerticalAlignment verticalAlignment, Representation representation, CBorder border, Boolean wrap) {
-        this.name = name;
-        this.size = size;
-        this.style = style;
-        this.foreground = foreground;
-        this.background = background;
-        this.horizontalAlignment = horizontalAlignment;
-        this.verticalAlignment = verticalAlignment;
-        this.representation = representation;
-        this.border = border;
-        this.wrap = wrap;
-    }
 
     public CFormat(FontStyle style, Color foreground, Color background, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment) {
         this(null, null, style, foreground, background, horizontalAlignment, verticalAlignment, null, null, null);
@@ -182,6 +149,20 @@ public class CFormat {
     }
 
     /**
+     * Fills values in the primary format which are null with values of the secondary format
+     *
+     * @param primary   the primary format
+     * @param secondary the secondary format
+     * @return a combination of both
+     */
+    public static CFormat combine(CFormat primary, CFormat secondary) {
+        if (primary == null && secondary == null) return null;
+        else if (secondary == null) return primary;
+        else if (primary == null) return secondary;
+        return primary.fillNull(secondary);
+    }
+
+    /**
      * Returns a new CFormat instance, which fills all null fields with values from the defaults.
      *
      * @param defaults the defaults to use on null fields
@@ -189,53 +170,17 @@ public class CFormat {
      */
     public CFormat fillNull(CFormat defaults) {
         return new CFormat(
-                (name != null ? name : defaults.name),
-                (size != null ? size : defaults.size),
-                (style != null ? style : defaults.style),
-                (foreground != null ? foreground : defaults.foreground),
-                (background != null ? background : defaults.background),
-                (horizontalAlignment != null ? horizontalAlignment : defaults.horizontalAlignment),
-                (verticalAlignment != null ? verticalAlignment : defaults.verticalAlignment),
-                (representation != null ? representation : defaults.representation),
-                (border != null ? border : defaults.border),
-                (wrap != null ? wrap : defaults.wrap)
+            (name != null ? name : defaults.name),
+            (size != null ? size : defaults.size),
+            (style != null ? style : defaults.style),
+            (foreground != null ? foreground : defaults.foreground),
+            (background != null ? background : defaults.background),
+            (horizontalAlignment != null ? horizontalAlignment : defaults.horizontalAlignment),
+            (verticalAlignment != null ? verticalAlignment : defaults.verticalAlignment),
+            (representation != null ? representation : defaults.representation),
+            (border != null ? border : defaults.border),
+            (wrap != null ? wrap : defaults.wrap)
         );
-    }
-
-    public Color getBackground() {
-        return background;
-    }
-
-    public Color getForeground() {
-        return foreground;
-    }
-
-    public HorizontalAlignment getHorizontalAlignment() {
-        return horizontalAlignment;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public FontStyle getStyle() {
-        return style;
-    }
-
-    public VerticalAlignment getVerticalAlignment() {
-        return verticalAlignment;
-    }
-
-    public CBorder getBorder() {
-        return border;
-    }
-
-    public Representation getRepresentation() {
-        return representation;
     }
 
     public Boolean isWrap() {
@@ -244,20 +189,19 @@ public class CFormat {
 
     @Override
     public boolean equals(Object obj) {
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
-        final CFormat other = (CFormat)obj;
-        if ( (this.name == null) ? (other.name != null) : !this.name.equals(other.name) ) return false;
-        if ( this.size != other.size && (this.size == null || !this.size.equals(other.size)) ) return false;
-        if ( this.style != other.style ) return false;
-        if ( this.foreground != other.foreground && (this.foreground == null || !this.foreground.equals(other.foreground)) ) return false;
-        if ( this.background != other.background && (this.background == null || !this.background.equals(other.background)) ) return false;
-        if ( this.horizontalAlignment != other.horizontalAlignment ) return false;
-        if ( this.verticalAlignment != other.verticalAlignment ) return false;
-        if ( this.representation != other.representation ) return false;
-        if ( this.border != other.border && (this.border == null || !this.border.equals(other.border)) ) return false;
-        if ( this.wrap != other.wrap && (this.wrap == null || !this.wrap.equals(other.wrap)) ) return false;
-        return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        final CFormat other = (CFormat) obj;
+        if (!Objects.equals(this.name, other.name)) return false;
+        if (!Objects.equals(this.size, other.size)) return false;
+        if (this.style != other.style) return false;
+        if (!Objects.equals(this.foreground, other.foreground)) return false;
+        if (!Objects.equals(this.background, other.background)) return false;
+        if (this.horizontalAlignment != other.horizontalAlignment) return false;
+        if (this.verticalAlignment != other.verticalAlignment) return false;
+        if (this.representation != other.representation) return false;
+        if (!Objects.equals(this.border, other.border)) return false;
+        return Objects.equals(this.wrap, other.wrap);
     }
 
     @Override
@@ -279,5 +223,70 @@ public class CFormat {
     @Override
     public String toString() {
         return "CFormat{" + "name=" + name + ", size=" + size + ", style=" + style + ", foreground=" + foreground + ", background=" + background + ", horizontalAlignment=" + horizontalAlignment + ", verticalAlignment=" + verticalAlignment + ", representation=" + representation + ", border=" + border + ", wrap=" + wrap + '}';
+    }
+
+    public enum FontStyle {
+
+        /**
+         * Bold Font Style
+         */
+        BOLD,
+        /**
+         * Bold and Italic Font Style
+         */
+        BOLD_ITALIC,
+        /**
+         * Italic Font Style
+         */
+        ITALIC,
+        /**
+         * Default Font Style
+         */
+        NORMAL
+
+    }
+
+    public enum HorizontalAlignment {
+
+        /**
+         * Align to Center
+         */
+        CENTER,
+        /**
+         * Align to Left
+         */
+        LEFT,
+        /**
+         * Align to Right
+         */
+        RIGHT
+
+    }
+
+    public enum VerticalAlignment {
+
+        /**
+         *
+         */
+        BOTTOM,
+        /**
+         *
+         */
+        MIDDLE,
+        /**
+         *
+         */
+        TOP
+
+    }
+
+    public enum Representation {
+
+        DEFAULT,
+        TEXT,
+        PERCENT_INTEGER,
+        PERCENT_FLOAT,
+        SHORT_DATE,
+        CURRENCY_EURO
     }
 }

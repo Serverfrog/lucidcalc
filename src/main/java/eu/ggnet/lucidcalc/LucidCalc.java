@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,8 +16,10 @@
  */
 package eu.ggnet.lucidcalc;
 
-import eu.ggnet.lucidcalc.jexcel.JExcelLucidCalcReader;
-import eu.ggnet.lucidcalc.jexcel.JExcelLucidCalcWriter;
+import eu.ggnet.lucidcalc.apachepoi.ApachePoiReader;
+import eu.ggnet.lucidcalc.apachepoi.ApachePoiWriter;
+import eu.ggnet.lucidcalc.jexcel.JExcelReader;
+import eu.ggnet.lucidcalc.jexcel.JExcelWriter;
 
 /**
  * Generator
@@ -27,24 +29,35 @@ public abstract class LucidCalc {
     private LucidCalc() {
     }
 
-    public static enum Backend {
-
-        XLS
-    }
-
+    /**
+     * Create the specific Backend for the given Argument
+     * @param backend is the Backend which should be used
+     * @return the implemented LucidCalcWriter or an IllegalArgumentException if the Backend is not implemented
+     */
     public static LucidCalcWriter createWriter(Backend backend) {
-        switch (backend) {
-            case XLS:
-                return new JExcelLucidCalcWriter();
-        }
-        return null;
+        return switch (backend) {
+            case JEXCEL -> new JExcelWriter();
+            case APACHE_POI -> new ApachePoiWriter();
+            default -> throw new IllegalArgumentException("Unknown backend: " + backend);
+        };
     }
 
+    /**
+     * Create the specific Backend for the given Argument
+     * @param backend is the Backend which should be used
+     * @return the implemented LucidCalcReader or an IllegalArgumentException if the Backend is not implemented
+     */
     public static LucidCalcReader createReader(Backend backend) {
-        switch (backend) {
-            case XLS:
-                return new JExcelLucidCalcReader();
-        }
-        return null;
+        return switch (backend) {
+            case JEXCEL -> new JExcelReader();
+            case APACHE_POI -> new ApachePoiReader();
+            default -> throw new IllegalArgumentException("Unknown backend: " + backend);
+        };
+    }
+
+    public enum Backend {
+
+        JEXCEL,
+        APACHE_POI
     }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,13 +16,19 @@
  */
 package eu.ggnet.lucidcalc;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * A simple cell without position information
  */
 public class SCell implements CCellReference {
 
+    @Getter
     private CFormat format;
-    private Object value;
+    @Getter
+    private final Object value;
+    @Setter
     private CCellReference reference;
 
     public SCell(Object value) {
@@ -34,25 +40,13 @@ public class SCell implements CCellReference {
         this.value = value;
     }
 
-    public CFormat getFormat() {
-        return format;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setReference(CCellReference reference) {
-        this.reference = reference;
+    @Override
+    public int rowIndex() {
+        return reference == null ? -1 : reference.rowIndex();
     }
 
     @Override
-    public int getRowIndex() {
-        return reference == null ? -1 : reference.getRowIndex();
-    }
-
-    @Override
-    public int getColumnIndex() {
-        return reference == null ? -1 : reference.getColumnIndex();
+    public int columnIndex() {
+        return reference == null ? -1 : reference.columnIndex();
     }
 }

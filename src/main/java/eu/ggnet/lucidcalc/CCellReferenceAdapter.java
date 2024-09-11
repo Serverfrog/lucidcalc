@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,24 +16,9 @@
  */
 package eu.ggnet.lucidcalc;
 
-public class CCellReferenceAdapter implements CCellReference {
+import lombok.Getter;
 
-    private int rowIndex;
+@Getter
+public record CCellReferenceAdapter(int rowIndex, int columnIndex) implements CCellReference {
 
-    private int columnIndex;
-
-    public CCellReferenceAdapter(int rowIndex, int columnIndex) {
-        this.rowIndex = rowIndex;
-        this.columnIndex = columnIndex;
-    }
-
-    @Override
-    public int getColumnIndex() {
-        return columnIndex;
-    }
-
-    @Override
-    public int getRowIndex() {
-        return rowIndex;
-    }
 }

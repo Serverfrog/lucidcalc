@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,8 +16,6 @@
  */
 package eu.ggnet.lucidcalc.jexcel;
 
-import java.awt.Color;
-
 import jxl.biff.DisplayFormat;
 import jxl.format.Alignment;
 import jxl.format.BorderLineStyle;
@@ -26,6 +24,8 @@ import jxl.format.VerticalAlignment;
 import jxl.write.DateFormat;
 import jxl.write.NumberFormat;
 import jxl.write.NumberFormats;
+
+import java.awt.*;
 
 /**
  * FormatUtil for the JExcelOffice. This utility class must be handled special. Because the JExcelApi keeps some activities static, it must be ensured,
@@ -39,9 +39,9 @@ public class FormatUtil {
 
     public Colour discover(Color color) {
         for (Colour colour : Colour.getAllColours()) {
-            if ( colour.getDefaultRGB().getBlue() == color.getBlue()
-                    && colour.getDefaultRGB().getRed() == color.getRed()
-                    && colour.getDefaultRGB().getGreen() == color.getGreen() ) {
+            if (colour.getDefaultRGB().getBlue() == color.getBlue()
+                && colour.getDefaultRGB().getRed() == color.getRed()
+                && colour.getDefaultRGB().getGreen() == color.getGreen()) {
                 return colour;
             }
         }
@@ -49,51 +49,40 @@ public class FormatUtil {
     }
 
     public Alignment discover(eu.ggnet.lucidcalc.CFormat.HorizontalAlignment horizontalAlignment) {
-        switch (horizontalAlignment) {
-            case CENTER:
-                return Alignment.CENTRE;
-            case LEFT:
-                return Alignment.LEFT;
-            case RIGHT:
-                return Alignment.RIGHT;
-        }
-        return Alignment.GENERAL;
+        return switch (horizontalAlignment) {
+            case CENTER -> Alignment.CENTRE;
+            case LEFT -> Alignment.LEFT;
+            case RIGHT -> Alignment.RIGHT;
+        };
     }
 
     public VerticalAlignment discover(eu.ggnet.lucidcalc.CFormat.VerticalAlignment verticalAlignment) {
-        switch (verticalAlignment) {
-            case TOP:
-                return VerticalAlignment.TOP;
-            case MIDDLE:
-                return VerticalAlignment.CENTRE;
-            case BOTTOM:
-                return VerticalAlignment.BOTTOM;
-        }
-        return VerticalAlignment.JUSTIFY;
+        return switch (verticalAlignment) {
+            case TOP -> VerticalAlignment.TOP;
+            case MIDDLE -> VerticalAlignment.CENTRE;
+            case BOTTOM -> VerticalAlignment.BOTTOM;
+        };
     }
 
     public DisplayFormat discover(eu.ggnet.lucidcalc.CFormat.Representation representation) {
-        switch (representation) {
-            case DEFAULT:
-                return NumberFormats.DEFAULT;
-            case TEXT:
-                return NumberFormats.TEXT;
-            case PERCENT_INTEGER:
-                return NumberFormats.PERCENT_INTEGER;
-            case PERCENT_FLOAT:
-                return NumberFormats.PERCENT_FLOAT;
-            case SHORT_DATE:
-                if ( shortDate == null ) shortDate = new DateFormat("dd.MM.yy");
-                return shortDate;
-            case CURRENCY_EURO:
-                if ( currencyEuro == null ) currencyEuro = new jxl.write.NumberFormat("#,#00.00 \u20AC", jxl.write.NumberFormat.COMPLEX_FORMAT);
-                return currencyEuro;
-        }
-        return NumberFormats.DEFAULT;
+        return switch (representation) {
+            case DEFAULT -> NumberFormats.DEFAULT;
+            case TEXT -> NumberFormats.TEXT;
+            case PERCENT_INTEGER -> NumberFormats.PERCENT_INTEGER;
+            case PERCENT_FLOAT -> NumberFormats.PERCENT_FLOAT;
+            case SHORT_DATE -> {
+                if (shortDate == null) shortDate = new DateFormat("dd.MM.yy");
+                yield shortDate;
+            }
+            case CURRENCY_EURO -> {
+                if (currencyEuro == null) currencyEuro = new NumberFormat("#,#00.00 \u20AC", NumberFormat.COMPLEX_FORMAT);
+                yield currencyEuro;
+            }
+        };
     }
 
     public BorderLineStyle discover(eu.ggnet.lucidcalc.CBorder.LineStyle lineStyle) {
-        if ( lineStyle == null ) return BorderLineStyle.NONE;
+        if (lineStyle == null) return BorderLineStyle.NONE;
         // This just works, because I use the same order.
         return BorderLineStyle.getStyle(lineStyle.ordinal());
     }

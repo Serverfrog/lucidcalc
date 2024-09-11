@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,10 +16,13 @@
  */
 package eu.ggnet.lucidcalc;
 
+import lombok.Getter;
+
 /**
  * A great way to build a headline.
  * Template.getHeadLine().add(...).add(...).....
  */
+@Getter
 public class STableColumn {
 
     private String head;
@@ -32,21 +35,31 @@ public class STableColumn {
     }
 
     public STableColumn(String head) {
-        this(head,null,null);
+        this(head, null, null);
     }
 
-    public STableColumn(String head,CFormat format) {
-        this(head,null,format);
+    public STableColumn(String head, CFormat format) {
+        this(head, null, format);
     }
 
-    public STableColumn(String head,Integer size) {
-        this(head,size,null);
+    public STableColumn(String head, Integer size) {
+        this(head, size, null);
     }
 
     public STableColumn(String head, Integer size, CFormat format) {
         this.head = head;
         this.size = size;
         this.format = format;
+    }
+
+    public STableColumn setFormat(CFormat format) {
+        this.format = format;
+        return this;
+    }
+
+    public STableColumn setAction(SAction action) {
+        this.action = action;
+        return this;
     }
 
     public STableColumn setHead(String head) {
@@ -57,32 +70,6 @@ public class STableColumn {
     public STableColumn setSize(Integer size) {
         this.size = size;
         return this;
-    }
-
-    public STableColumn setAction(SAction action) {
-        this.action = action;
-        return this;
-    }
-
-    public STableColumn setFormat(CFormat format) {
-        this.format = format;
-        return this;
-    }
-
-    public CFormat getFormat() {
-        return format;
-    }
-
-    public SAction getAction() {
-        return action;
-    }
-
-    public String getHead() {
-        return head;
-    }
-
-    public Integer getSize() {
-        return size;
     }
 
 }

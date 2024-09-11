@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,37 +16,18 @@
  */
 package eu.ggnet.lucidcalc;
 
+import lombok.Getter;
+
 /**
  * The RowView
+ *
+ * @param rowIndex -- GETTER --
+ *                 Get the value of rowIndex
+ * @param size     -- GETTER --
+ *                 Get the value of rowSize
  */
-public class CRowView {
-
-    private final int rowIndex;
-    private final int size;
-
-    public CRowView(int rowIndex, int size) {
-        this.rowIndex = rowIndex;
-        this.size = size;
-    }
-
-    /**
-     * Get the value of rowSize
-     *
-     * @return the value of rowSize
-     */
-    public int getSize() {
-        return size;
-    }
-
-
-    /**
-     * Get the value of rowIndex
-     *
-     * @return the value of rowIndex
-     */
-    public int getRowIndex() {
-        return rowIndex;
-    }
+@Getter
+public record CRowView(int rowIndex, int size) {
 
 
 }

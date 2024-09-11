@@ -16,14 +16,29 @@
  */
 package eu.ggnet.lucidcalc;
 
-import java.util.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class SBlock implements IDynamicCellContainer {
 
+    /**
+     * -- SETTER --
+     *  Sets a Format to be used in the whole block.
+     *  <p>
+     *
+     * @param format the fromat.
+     */
+    @Setter
+    @Getter
     private CFormat format;
     // List(r,c) 1st index is row, second column
 
-    private List<List<SCell>> cells;
+    private final List<List<SCell>> cells;
 
     public SBlock() {
         cells = new ArrayList<>();
@@ -40,12 +55,12 @@ public class SBlock implements IDynamicCellContainer {
         this();
         this.format = format;
         add(value);
-        if ( newline ) add();
+        if (newline) add();
     }
 
     public SBlock(SBlock old) {
         this();
-        if ( old == null ) return;
+        if (old == null) return;
         this.format = old.format;
         for (List<SCell> oldRow : old.cells) {
             List<SCell> row = new ArrayList<>(oldRow.size());
@@ -54,19 +69,6 @@ public class SBlock implements IDynamicCellContainer {
             }
             this.cells.add(row);
         }
-    }
-
-    /**
-     * Sets a Format to be used in the whole block.
-     * <p>
-     * @param format the fromat.
-     */
-    public void setFormat(CFormat format) {
-        this.format = format;
-    }
-
-    public CFormat getFormat() {
-        return format;
     }
 
     public List<List<SCell>> getContent() {
@@ -88,16 +90,16 @@ public class SBlock implements IDynamicCellContainer {
     public final void add(Object... elems) {
         List<SCell> row = new ArrayList<>();
         cells.add(row);
-        if ( elems == null ) return;
-        if ( elems.length == 1 ) {
-            if ( elems[0] instanceof SCell ) row.add((SCell)elems[0]);
+        if (elems == null) return;
+        if (elems.length == 1) {
+            if (elems[0] instanceof SCell) row.add((SCell) elems[0]);
             else row.add(new SCell(elems[0]));
             return;
         }
         for (int i = 0; i < elems.length; i++) {
-            if ( elems[i] instanceof SCell ) row.add((SCell)elems[i]);
-            else if ( ((i + 1) < elems.length) && (elems[i + 1] instanceof CFormat) ) {
-                row.add(new SCell(elems[i], (CFormat)elems[i + 1]));
+            if (elems[i] instanceof SCell) row.add((SCell) elems[i]);
+            else if (((i + 1) < elems.length) && (elems[i + 1] instanceof CFormat)) {
+                row.add(new SCell(elems[i], (CFormat) elems[i + 1]));
                 i++;
             } else row.add(new SCell(elems[i]));
         }
@@ -115,7 +117,7 @@ public class SBlock implements IDynamicCellContainer {
             for (int columnIndex = 0; columnIndex < cells.get(rowIndex).size(); columnIndex++) {
                 SCell scell = cells.get(rowIndex).get(columnIndex);
                 CCell ccell = new CCell(toColumnIndex + columnIndex, toRowIndex + rowIndex,
-                        scell.getValue(), CFormat.combine(scell.getFormat(), format));
+                    scell.getValue(), CFormat.combine(scell.getFormat(), format));
                 scell.setReference(ccell);
                 ccells.add(ccell);
             }

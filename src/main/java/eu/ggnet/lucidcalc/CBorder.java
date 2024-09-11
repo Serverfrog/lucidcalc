@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,21 +16,22 @@
  */
 package eu.ggnet.lucidcalc;
 
-import java.awt.Color;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+import java.awt.*;
 
 /**
  *
  */
+@Getter
+@ToString
+@EqualsAndHashCode
 public class CBorder {
 
-    public static enum LineStyle {
-
-        NONE, THIN, MEDIUM, DASHED, DOTTED, THICK, DOUBLE, HAIR, MEDIUM_DASHED, DASH_DOT, MEDIUM_DASH_DOT, DASH_DOT_DOT, MEDIUM_DASH_DOT_DOT, SLANTED_DASH_DOT
-    }
-
-    private Color color;
-    private LineStyle lineStyle;
-
+    private final Color color;
+    private final LineStyle lineStyle;
     public CBorder(Color color, LineStyle lineStyle) {
         this.lineStyle = lineStyle;
         this.color = color;
@@ -40,34 +41,9 @@ public class CBorder {
         this(color, LineStyle.THIN);
     }
 
-    public Color getColor() {
-        return color;
+    public enum LineStyle {
+
+        NONE, THIN, MEDIUM, DASHED, DOTTED, THICK, DOUBLE, HAIR, MEDIUM_DASHED, DASH_DOT, MEDIUM_DASH_DOT, DASH_DOT_DOT, MEDIUM_DASH_DOT_DOT, SLANTED_DASH_DOT
     }
 
-    public LineStyle getLineStyle() {
-        return lineStyle;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        final CBorder other = (CBorder) obj;
-        if (this.lineStyle != other.lineStyle) return false;
-        if (this.color != other.color && (this.color == null || !this.color.equals(other.color))) return false;
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 13 * hash + (this.lineStyle != null ? this.lineStyle.hashCode() : 0);
-        hash = 13 * hash + (this.color != null ? this.color.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        return "CBorder{" + "color=" + color + ", lineStyle=" + lineStyle + '}';
-    }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,29 +16,28 @@
  */
 package eu.ggnet.lucidcalc;
 
+import lombok.Setter;
+
 /**
  * CellReference implementation there the row can be changed by an Action
  */
 public class SSelfRowReference implements CCellReference {
 
-    private int columnIndex;
+    private final int columnIndex;
+    @Setter
     private int rowIndex;
 
     public SSelfRowReference(int columnIndex) {
         this.columnIndex = columnIndex;
     }
 
-    public void setRowIndex(int rowIndex) {
-        this.rowIndex = rowIndex;
-    }
-
     @Override
-    public int getColumnIndex() {
+    public int columnIndex() {
         return columnIndex;
     }
 
     @Override
-    public int getRowIndex() {
+    public int rowIndex() {
         return rowIndex;
     }
 

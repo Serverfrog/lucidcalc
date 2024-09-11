@@ -26,15 +26,15 @@ import java.util.List;
  */
 public class STableModelList<T> implements STableModel {
 
-//    @NotNull
-    private List<T> rows;
+    //    @NotNull
+    private final List<T> rows;
 
     public STableModelList(T[] rows) {
         this.rows = Arrays.asList(rows);
     }
 
     public STableModelList(Collection<T> rows) {
-        this.rows = new ArrayList<T>(rows);
+        this.rows = new ArrayList<>(rows);
     }
 
     @Override

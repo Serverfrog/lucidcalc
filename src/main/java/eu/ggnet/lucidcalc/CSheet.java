@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,13 +16,20 @@
  */
 package eu.ggnet.lucidcalc;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  *
  */
 public class CSheet extends CCellComposite {
 
+    @Setter
+    @Getter
     private boolean showGridLines = true;
 
+    @Setter
+    @Getter
     private String name;
 
     private int endRowIndex = 0;
@@ -37,6 +44,7 @@ public class CSheet extends CCellComposite {
     /**
      * The name of the sheet.
      * <p>
+     *
      * @param name of the sheet.
      */
     public CSheet(String name) {
@@ -45,7 +53,7 @@ public class CSheet extends CCellComposite {
 
     public CSheet(String name, Integer... columnsizes) {
         this.name = name;
-        if ( columnsizes == null ) return;
+        if (columnsizes == null) return;
         for (int i = 0; i < columnsizes.length; i++) {
             Integer size = columnsizes[i];
             columnViews.add(new CColumnView(i, size));
@@ -56,27 +64,11 @@ public class CSheet extends CCellComposite {
         this("NoName");
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isShowGridLines() {
-        return showGridLines;
-    }
-
-    public void setShowGridLines(boolean showGridLines) {
-        this.showGridLines = showGridLines;
-    }
-
     public final void addBelow(int columnDelta, int rowDelta, IDynamicCellContainer container) {
-        CCellComposite composite = container.shiftTo(0 + columnDelta, endRowIndex + rowDelta);
+        CCellComposite composite = container.shiftTo(columnDelta, endRowIndex + rowDelta);
         // TODO: Very simple inference of column sizes
-        if ( columnViews.isEmpty() && composite.getColumnViews() != null ) columnViews = composite.getColumnViews();
-        if ( composite.getRowViews() != null ) rowViews.addAll(composite.getRowViews());
+        if (columnViews.isEmpty() && composite.getColumnViews() != null) columnViews = composite.getColumnViews();
+        if (composite.getRowViews() != null) rowViews.addAll(composite.getRowViews());
         cells.addAll(composite.getCells());
         endRowIndex += rowDelta + container.getRowCount();
     }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -15,6 +15,6 @@
  * License along with this library; If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * LucidCalc Elemets. Look in the tryout Package to get an Idea.
+ * LucidCalc Elements. Look in the tryout Package to get an Idea.
  */
 package eu.ggnet.lucidcalc;

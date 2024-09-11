@@ -16,6 +16,8 @@
  */
 package eu.ggnet.lucidcalc;
 
+import lombok.Getter;
+
 /**
  * Represents a simple Formula which can handle Dynamic References
  * new SFormula(CCellReference , "/", CCellReference)
@@ -23,8 +25,14 @@ package eu.ggnet.lucidcalc;
  * <p>
  * Also implements the SAction for static formulas, so it is possible to add a Formula to an STable
  */
+@Getter
 public class SFormula implements IFormula {
 
+    /**
+     * -- GETTER --
+     *  Hint: Useful to manipulate something later in the code
+     *
+     */
     private final Object[] elements;
 
     /**
@@ -37,23 +45,13 @@ public class SFormula implements IFormula {
         this.elements = elems;
     }
 
-    /**
-     * Hint: Useful to manipulate something later in the code
-     *
-     * @return the elements
-     */
-    public Object[] getElements() {
-        return elements;
-    }
-
     @Override
     public String toRawFormula() {
         StringBuilder sb = new StringBuilder();
         for (Object elem : elements) {
-            if ( elem instanceof CCellReference ) {
-                CCellReference ref = (CCellReference)elem;
+            if (elem instanceof final CCellReference ref) {
                 // +1 is needed because calc allways start with 1 not with 0
-                sb.append(toColumnLetter(ref.getColumnIndex())).append(ref.getRowIndex() + 1);
+                sb.append(toColumnLetter(ref.columnIndex())).append(ref.rowIndex() + 1);
             } else {
                 sb.append(elem);
             }
@@ -62,6 +60,6 @@ public class SFormula implements IFormula {
     }
 
     private String toColumnLetter(int columnIndex) {
-        return String.valueOf((char)(columnIndex + 65));
+        return String.valueOf((char) (columnIndex + 65));
     }
 }

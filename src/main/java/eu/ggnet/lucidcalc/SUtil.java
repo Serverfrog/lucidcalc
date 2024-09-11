@@ -24,80 +24,20 @@ import java.lang.reflect.Method;
  */
 public class SUtil {
 
-    private static class BeanProperty<T> implements SAction<T> {
-
-        private String propertyName;
-
-        public BeanProperty(String property) {
-            this.propertyName = property;
-        }
-
-        @Override
-        public Object getValue(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, T lineModel) {
-            return chainedValue(propertyName, lineModel);
-        }
-
-        private Object chainedValue(String propertyChain, Object main) {
-            if ( !propertyChain.contains(".") ) {
-                return invoke(propertyChain, main);
-            }
-            int dot = propertyChain.indexOf(".");
-            String property = propertyChain.substring(0, dot);
-            return chainedValue(propertyChain.substring(dot + 1, propertyChain.length()), invoke(property, main));
-        }
-
-        private Object invoke(String property, Object main) {
-            Method m;
-            try {
-                try {
-                    m = main.getClass().getMethod(
-                            "get"
-                            + property.substring(0, 1).toUpperCase()
-                            + property.substring(1));
-                } catch (NoSuchMethodException ex) {
-                    try {
-                        // Trying "is" in the case of booleans
-                        m = main.getClass().getMethod(
-                                "is"
-                                + property.substring(0, 1).toUpperCase()
-                                + property.substring(1));
-                    } catch (Exception ex1) {
-                        throw new RuntimeException("Exeption during invoke().getMethod()", ex1);
-                    }
-                }
-                m.setAccessible(true);
-                return m.invoke(main);
-            } catch (IllegalAccessException ex) {
-                throw new RuntimeException("Exeption during invoke()", ex);
-            } catch (IllegalArgumentException ex) {
-                throw new RuntimeException("Exeption during invoke()", ex);
-            } catch (InvocationTargetException ex) {
-                throw new RuntimeException("Exeption during invoke()", ex);
-            } catch (SecurityException ex) {
-                throw new RuntimeException("Exeption during invoke()", ex);
-            }
-        }
-
-        @Override
-        public CFormat getFormat(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, T lineModel) {
-            return null;
-        }
-    }
-
     private final static SAction SELF_ROW = new SAction() {
 
         @Override
         public Object getValue(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, Object lineModel) {
-            if ( !(lineModel instanceof Object[]) ) {
+            if (!(lineModel instanceof Object[])) {
                 return "LineModel not of type Object[]";
             }
-            Object o = ((Object[])lineModel)[relativeColumnIndex];
-            if ( !(o instanceof SFormula) ) {
+            Object o = ((Object[]) lineModel)[relativeColumnIndex];
+            if (!(o instanceof SFormula)) {
                 return "o.getClass != SFormula, but " + o;
             }
-            for (Object elem : ((SFormula)o).getElements()) {
-                if ( elem instanceof SSelfRowReference ) {
-                    ((SSelfRowReference)elem).setRowIndex(absoluteRowIndex);
+            for (Object elem : ((SFormula) o).getElements()) {
+                if (elem instanceof SSelfRowReference) {
+                    ((SSelfRowReference) elem).setRowIndex(absoluteRowIndex);
                 }
             }
             return o;
@@ -108,7 +48,6 @@ public class SUtil {
             return null;
         }
     };
-
     private final static SAction NULL = new SAction() {
 
         @Override
@@ -162,5 +101,59 @@ public class SUtil {
      */
     public static SSelfRowReference SR(int column) {
         return new SSelfRowReference(column);
+    }
+
+    private static class BeanProperty<T> implements SAction<T> {
+
+        private final String propertyName;
+
+        public BeanProperty(String property) {
+            this.propertyName = property;
+        }
+
+        @Override
+        public Object getValue(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, T lineModel) {
+            return chainedValue(propertyName, lineModel);
+        }
+
+        private Object chainedValue(String propertyChain, Object main) {
+            if (!propertyChain.contains(".")) {
+                return invoke(propertyChain, main);
+            }
+            int dot = propertyChain.indexOf(".");
+            String property = propertyChain.substring(0, dot);
+            return chainedValue(propertyChain.substring(dot + 1), invoke(property, main));
+        }
+
+        private Object invoke(String property, Object main) {
+            Method m;
+            try {
+                try {
+                    m = main.getClass().getMethod(
+                        "get"
+                            + property.substring(0, 1).toUpperCase()
+                            + property.substring(1));
+                } catch (NoSuchMethodException ex) {
+                    try {
+                        // Trying "is" in the case of booleans
+                        m = main.getClass().getMethod(
+                            "is"
+                                + property.substring(0, 1).toUpperCase()
+                                + property.substring(1));
+                    } catch (Exception ex1) {
+                        throw new RuntimeException("Exeption during invoke().getMethod()", ex1);
+                    }
+                }
+                m.setAccessible(true);
+                return m.invoke(main);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException ex) {
+                throw new RuntimeException("Exeption during invoke()", ex);
+            }
+        }
+
+        @Override
+        public CFormat getFormat(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, T lineModel) {
+            return null;
+        }
     }
 }

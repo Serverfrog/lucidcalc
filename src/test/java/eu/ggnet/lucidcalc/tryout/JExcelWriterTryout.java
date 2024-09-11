@@ -9,17 +9,18 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
-import eu.ggnet.lucidcalc.jexcel.JExcelWriterTest;
+import eu.ggnet.lucidcalc.LucidCalc;
+import eu.ggnet.lucidcalc.jexcel.LucidCalcWriterTest;
 
 /**
  *
  * @author oliver.guenther
  */
 public class JExcelWriterTryout {
-    
+
     public static void main(String[] args) throws IOException {
-        File file = JExcelWriterTest.generateDemoTableAsTempFile();
+        File file = LucidCalcWriterTest.generateDemoTableAsTempFile(LucidCalc.Backend.JEXCEL);
         Desktop.getDesktop().open(file);
     }
-    
+
 }

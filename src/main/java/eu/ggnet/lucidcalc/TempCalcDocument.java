@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,6 +16,8 @@
  */
 package eu.ggnet.lucidcalc;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -25,6 +27,8 @@ import java.io.IOException;
 public class TempCalcDocument extends CCalcDocument {
 
     private File file;
+    @Getter
+    private final String prefix;
 
     public TempCalcDocument(String prefix) {
         this.prefix = prefix;
@@ -34,15 +38,9 @@ public class TempCalcDocument extends CCalcDocument {
         this("aaa");
     }
 
-    private String prefix;
-
-    public String getPrefix() {
-        return prefix;
-    }
-
     @Override
     public File getFile() throws RuntimeException {
-        if ( file == null ) {
+        if (file == null) {
             try {
                 file = File.createTempFile(prefix, ".xls");
             } catch (IOException ex) {

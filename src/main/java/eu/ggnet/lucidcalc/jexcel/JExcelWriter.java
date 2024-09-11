@@ -17,26 +17,14 @@
 package eu.ggnet.lucidcalc.jexcel;
 
 import eu.ggnet.lucidcalc.CBorder;
-import static eu.ggnet.lucidcalc.CBorder.LineStyle.*;
 import eu.ggnet.lucidcalc.CCalcDocument;
 import eu.ggnet.lucidcalc.CCell;
 import eu.ggnet.lucidcalc.CColumnView;
 import eu.ggnet.lucidcalc.CFormat;
-import static eu.ggnet.lucidcalc.CFormat.FontStyle.*;
-import static eu.ggnet.lucidcalc.CFormat.HorizontalAlignment.*;
-import static eu.ggnet.lucidcalc.CFormat.Representation.*;
-import static eu.ggnet.lucidcalc.CFormat.VerticalAlignment.*;
 import eu.ggnet.lucidcalc.CRowView;
 import eu.ggnet.lucidcalc.CSheet;
 import eu.ggnet.lucidcalc.IFormula;
 import eu.ggnet.lucidcalc.LucidCalcWriter;
-import static java.awt.Color.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.biff.formula.FormulaParser;
@@ -49,13 +37,29 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import static eu.ggnet.lucidcalc.CBorder.LineStyle.NONE;
+import static eu.ggnet.lucidcalc.CFormat.FontStyle.NORMAL;
+import static eu.ggnet.lucidcalc.CFormat.HorizontalAlignment.LEFT;
+import static eu.ggnet.lucidcalc.CFormat.Representation.DEFAULT;
+import static eu.ggnet.lucidcalc.CFormat.VerticalAlignment.TOP;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.GRAY;
+import static java.awt.Color.WHITE;
+
 /**
  *
  */
-public class JExcelLucidCalcWriter implements LucidCalcWriter {
+public class JExcelWriter implements LucidCalcWriter {
 
     private final static CFormat DEFAULT_FORMAT = new CFormat("Verdana", 10, NORMAL, BLACK, WHITE, LEFT, TOP, DEFAULT,
-            new CBorder(GRAY, NONE), false);
+        new CBorder(GRAY, NONE), false);
 
     @Override
     public File write(CCalcDocument document) {
@@ -77,11 +81,11 @@ public class JExcelLucidCalcWriter implements LucidCalcWriter {
                 WritableSheet jsheet = workbook.createSheet(csheet.getName(), sheetIndex);
                 jsheet.getSettings().setShowGridLines(csheet.isShowGridLines());
                 for (CColumnView cColumn : csheet.getColumnViews()) {
-                    jsheet.setColumnView(cColumn.getColumnIndex(), cColumn.getSize());
+                    jsheet.setColumnView(cColumn.columnIndex(), cColumn.size());
                 }
 
                 for (CRowView cRowView : csheet.getRowViews()) {
-                    jsheet.setRowView(cRowView.getRowIndex(), cRowView.getSize());
+                    jsheet.setRowView(cRowView.rowIndex(), cRowView.size());
                 }
 
                 for (CCell cCell : csheet.getCells()) {
@@ -115,7 +119,7 @@ public class JExcelLucidCalcWriter implements LucidCalcWriter {
                             jformat.setVerticalAlignment(util.discover(cFormat.getVerticalAlignment()));
                             if (cFormat.getBorder() != null) {
                                 jformat.setBorder(Border.ALL, util.discover(cFormat.getBorder().getLineStyle()),
-                                        util.discover(cFormat.getBorder().getColor()));
+                                    util.discover(cFormat.getBorder().getColor()));
                             }
                             if (cFormat.isWrap() != null) {
                                 jformat.setWrap(cFormat.isWrap());
@@ -124,39 +128,7 @@ public class JExcelLucidCalcWriter implements LucidCalcWriter {
                         }
                     }
 
-                    Object elem = cCell.getValue();
-                    WritableCell jcell = null;
-                    if (elem == null) {
-                        jcell = new Blank(cCell.getColumnIndex(), cCell.getRowIndex(), jformat);
-                    } else if (elem instanceof Number) {
-                        double value = Double.MIN_VALUE;
-                        if (elem instanceof Integer) {
-                            value = ((Integer) elem).doubleValue();
-                        } else if (elem instanceof Long) {
-                            value = ((Long) elem).doubleValue();
-                        } else if (elem instanceof Float) {
-                            value = ((Float) elem).doubleValue();
-                        } else if (elem instanceof Double) {
-                            value = (Double) elem;
-                        }
-                        // TODO The rest of the 8 datatypes
-                        jcell = new jxl.write.Number(cCell.getColumnIndex(), cCell.getRowIndex(), value, jformat);
-                    } else if (elem instanceof Boolean) {
-                        jcell = new jxl.write.Boolean(cCell.getColumnIndex(), cCell.getRowIndex(), (Boolean) elem, jformat);
-                    } else if (elem instanceof Date) {
-                        jcell = new jxl.write.DateTime(cCell.getColumnIndex(), cCell.getRowIndex(), (Date) elem, jformat);
-                    } else if (elem instanceof IFormula) {
-                        IFormula f = ((IFormula) elem);
-                        try {
-                            FormulaParser parser = new FormulaParser(f.toRawFormula(), null, null, ws);
-                            parser.parse();
-                            jcell = new jxl.write.Formula(cCell.getColumnIndex(), cCell.getRowIndex(), f.toRawFormula(), jformat);
-                        } catch (Exception e) {
-                            jcell = new jxl.write.Label(cCell.getColumnIndex(), cCell.getRowIndex(), "Error in Formula: " + f.toRawFormula() + " | " + e, jformat);
-                        }
-                    } else {
-                        jcell = new jxl.write.Label(cCell.getColumnIndex(), cCell.getRowIndex(), elem.toString(), jformat);
-                    }
+                    final WritableCell jcell = getWritableCell(cCell, jformat, ws);
                     jsheet.addCell(jcell);
                 }
             }
@@ -166,5 +138,40 @@ public class JExcelLucidCalcWriter implements LucidCalcWriter {
         } catch (WriteException | IOException ex) {
             throw new RuntimeException("Exception during document creation", ex);
         }
+    }
+
+    private static WritableCell getWritableCell(final CCell cCell, final WritableCellFormat jformat, final WorkbookSettings ws) {
+        Object elem = cCell.getValue();
+        WritableCell jcell;
+        switch (elem) {
+            case null -> jcell = new Blank(cCell.columnIndex(), cCell.rowIndex(), jformat);
+            case Number number -> {
+                double value = Double.MIN_VALUE;
+                if (elem instanceof Integer) {
+                    value = ((Integer) elem).doubleValue();
+                } else if (elem instanceof Long) {
+                    value = ((Long) elem).doubleValue();
+                } else if (elem instanceof Float) {
+                    value = ((Float) elem).doubleValue();
+                } else if (elem instanceof Double) {
+                    value = (Double) elem;
+                }
+                // TODO The rest of the 8 datatypes
+                jcell = new jxl.write.Number(cCell.columnIndex(), cCell.rowIndex(), value, jformat);
+            }
+            case Boolean b -> jcell = new jxl.write.Boolean(cCell.columnIndex(), cCell.rowIndex(), b, jformat);
+            case Date date -> jcell = new jxl.write.DateTime(cCell.columnIndex(), cCell.rowIndex(), date, jformat);
+            case final IFormula f -> {
+                try {
+                    FormulaParser parser = new FormulaParser(f.toRawFormula(), null, null, ws);
+                    parser.parse();
+                    jcell = new jxl.write.Formula(cCell.columnIndex(), cCell.rowIndex(), f.toRawFormula(), jformat);
+                } catch (Exception e) {
+                    jcell = new jxl.write.Label(cCell.columnIndex(), cCell.rowIndex(), "Error in Formula: " + f.toRawFormula() + " | " + e, jformat);
+                }
+            }
+            default -> jcell = new jxl.write.Label(cCell.columnIndex(), cCell.rowIndex(), elem.toString(), jformat);
+        }
+        return jcell;
     }
 }

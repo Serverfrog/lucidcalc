@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,15 +16,19 @@
  */
 package eu.ggnet.lucidcalc;
 
+import lombok.Getter;
+
 /**
  *
  */
-public class CCell implements CCellReference{
+public class CCell implements CCellReference {
 
-    private int columnIndex;
-    private int rowIndex;
-    private Object value;
-    private CFormat format;
+    private final int columnIndex;
+    private final int rowIndex;
+    @Getter
+    private final Object value;
+    @Getter
+    private final CFormat format;
 
     public CCell(int columnIndex, int rowIndex, Object value, CFormat format) {
         this.columnIndex = columnIndex;
@@ -38,21 +42,13 @@ public class CCell implements CCellReference{
     }
 
     @Override
-    public int getColumnIndex() {
+    public int columnIndex() {
         return columnIndex;
     }
 
     @Override
-    public int getRowIndex() {
+    public int rowIndex() {
         return rowIndex;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public CFormat getFormat() {
-        return format;
     }
 
     @Override
@@ -61,8 +57,7 @@ public class CCell implements CCellReference{
         if (getClass() != obj.getClass()) return false;
         final CCell other = (CCell) obj;
         if (this.rowIndex != other.rowIndex) return false;
-        if (this.columnIndex != other.columnIndex) return false;
-        return true;
+        return this.columnIndex == other.columnIndex;
     }
 
     @Override

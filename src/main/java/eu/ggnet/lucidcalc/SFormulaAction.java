@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH - Oliver Günther.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,7 +20,6 @@ import java.util.Arrays;
 
 /**
  * This is a shortcut to add a Formula to a table directly as action
- *
  */
 public class SFormulaAction extends SFormula implements SAction<Object> {
 
@@ -30,12 +29,11 @@ public class SFormulaAction extends SFormula implements SAction<Object> {
 
     @Override
     public Object getValue(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, Object lineModel) {
-        Object[]elements = Arrays.copyOf(super.getElements(),super.getElements().length);
+        Object[] elements = Arrays.copyOf(super.getElements(), super.getElements().length);
         for (int i = 0; i < elements.length; i++) {
             Object elem = elements[i];
-            if ( elem instanceof SSelfRowReference ) {
-                SSelfRowReference selfRow = (SSelfRowReference)elem;
-                elements[i] = new CCellReferenceAdapter(absoluteRowIndex,selfRow.getColumnIndex());
+            if (elem instanceof final SSelfRowReference selfRow) {
+                elements[i] = new CCellReferenceAdapter(absoluteRowIndex, selfRow.columnIndex());
             }
         }
         return new SFormula(elements);

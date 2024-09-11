@@ -16,6 +16,8 @@
  */
 package eu.ggnet.lucidcalc;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +25,10 @@ import java.util.List;
 /**
  *
  */
+@Getter
 public abstract class CCalcDocument {
 
-//    @Valid
+    //    @Valid
 //    @NotNull
     private final List<CSheet> sheets;
 
@@ -36,10 +39,6 @@ public abstract class CCalcDocument {
     public CCalcDocument add(CSheet sheet) {
         sheets.add(sheet);
         return this;
-    }
-
-    public List<CSheet> getSheets() {
-        return sheets;
     }
 
     public abstract File getFile();

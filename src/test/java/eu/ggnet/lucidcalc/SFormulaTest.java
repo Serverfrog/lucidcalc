@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 GG-Net GmbH
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,13 +21,15 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  *
  */
 public class SFormulaTest {
 
     @Test
-    public void testFormulaError() {
+    void testFormulaError() {
         SFormula[] formulas =  {
           new SFormula(33,"+",22,"//"),
           new SFormula(33,"+",2,"/",0),
@@ -35,21 +37,21 @@ public class SFormulaTest {
           new SFormula(33,"+",22),
           new SFormula(33,"+",22),
         };
-                        
+
         STable newTable = new STable();
         newTable.add(new STableColumn("TestFormula", 10));
         newTable.setModel(new STableModelList<>(formulas));
 
         SBlock block = new SBlock();
         block.add(new SFormula("SUMME(",newTable.getCellFirstRow(0),":",newTable.getCellLastRow(0),")"));
-        
-        
+
+
         CCalcDocument cdoc = new TempCalcDocument();
         cdoc.add(new CSheet("Sheet1",newTable,block));
-        File f = LucidCalc.createWriter(LucidCalc.Backend.XLS).write(cdoc);
-        f.delete();
-//        System.out.println(f.toURI());
+        File f = LucidCalc.createWriter(LucidCalc.Backend.JEXCEL).write(cdoc);
+        final boolean delete = f.delete();
+        assertTrue(delete);
         // No assert needed. If Anything goes wrong in the write process, an exception would be thrown.
     }
-        
+
 }
