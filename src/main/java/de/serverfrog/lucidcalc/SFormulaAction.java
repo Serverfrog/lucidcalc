@@ -20,13 +20,23 @@ import java.util.Arrays;
 
 /**
  * This is a shortcut to add a Formula to a table directly as action
+ *
+ * @author oliver.guenther
  */
+@SuppressWarnings("unused")
 public class SFormulaAction extends SFormula implements SAction<Object> {
 
+    /**
+     * <p>Constructor for SFormulaAction.</p>
+     *
+     * @param elems a {@link java.lang.Object} object
+     */
     public SFormulaAction(Object... elems) {
         super(elems);
     }
 
+    /** {@inheritDoc} */
+    @SuppressWarnings("unused")
     @Override
     public Object getValue(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, Object lineModel) {
         Object[] elements = Arrays.copyOf(super.getElements(), super.getElements().length);
@@ -39,6 +49,7 @@ public class SFormulaAction extends SFormula implements SAction<Object> {
         return new SFormula(elements);
     }
 
+    /** {@inheritDoc} */
     @Override
     public CFormat getFormat(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, Object lineModel) {
         return null;

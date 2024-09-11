@@ -16,9 +16,13 @@
  */
 package de.serverfrog.lucidcalc;
 
-import lombok.Getter;
 
-@Getter
+/**
+ * <p>CCellReferenceAdapter class.</p>
+ *
+ * @author oliver.guenther
+ */
+@SuppressWarnings("ALL")
 public record CCellReferenceAdapter(int rowIndex, int columnIndex) implements CCellReference {
 
 }

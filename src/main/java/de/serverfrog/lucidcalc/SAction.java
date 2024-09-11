@@ -17,7 +17,9 @@
 package de.serverfrog.lucidcalc;
 
 /**
+ * <p>SAction interface.</p>
  *
+ * @author oliver.guenther
  */
 public interface SAction<T> {
     /**

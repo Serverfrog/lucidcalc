@@ -16,10 +16,26 @@
  */
 package de.serverfrog.lucidcalc;
 
+/**
+ * <p>STableModel interface.</p>
+ *
+ * @author oliver.guenther
+ */
 public interface STableModel {
 
+    /**
+     * <p>getRow.</p>
+     *
+     * @param row a int
+     * @return a {@link java.lang.Object} object
+     */
     Object getRow(int row);
 
+    /**
+     * <p>getRowCount.</p>
+     *
+     * @return a int
+     */
     int getRowCount();
 
 }

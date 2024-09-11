@@ -26,8 +26,11 @@ import java.util.Set;
 
 /**
  * A Simple Table which can be place in a Sheet
+ *
+ * @author oliver.guenther
  */
 // TODO: Make Table honor the type, generics
+@SuppressWarnings("rawtypes")
 public class STable implements IDynamicCellContainer {
 
     private final List<STableColumn> columns;
@@ -50,11 +53,19 @@ public class STable implements IDynamicCellContainer {
     @Setter
     private SRowFormater rowFormater;
 
+    /**
+     * <p>Constructor for STable.</p>
+     */
     public STable() {
         this.columns = new ArrayList<>();
         this.cellReferences = new ArrayList<>();
     }
 
+    /**
+     * <p>Constructor for STable.</p>
+     *
+     * @param old a {@link de.serverfrog.lucidcalc.STable} object
+     */
     public STable(STable old) {
         this();
         if (old == null) {
@@ -64,20 +75,35 @@ public class STable implements IDynamicCellContainer {
         this.tableFormat = old.tableFormat;
         this.headlineHeight = old.headlineHeight;
         this.rowHeight = old.rowHeight;
-        for (STableColumn oldColumn : old.columns) {
-            columns.add(oldColumn);
-        }
+        this.rowFormater = old.rowFormater;
+        this.model = old.model;
+        columns.addAll(old.columns);
     }
 
+    /**
+     * <p>add.</p>
+     *
+     * @param o a {@link de.serverfrog.lucidcalc.STableColumn} object
+     * @return a {@link de.serverfrog.lucidcalc.STable} object
+     */
     public STable add(STableColumn o) {
         columns.add(o);
         return this;
     }
 
+    /**
+     * <p>replace.</p>
+     *
+     * @param index a int
+     * @param o     a {@link de.serverfrog.lucidcalc.STableColumn} object
+     */
     public void replace(int index, STableColumn o) {
         columns.set(index, o);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getRowCount() {
         int count = 1; // Inc. Headline
@@ -87,6 +113,9 @@ public class STable implements IDynamicCellContainer {
         return count;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getColumnCount() {
         return columns.size();
@@ -116,6 +145,9 @@ public class STable implements IDynamicCellContainer {
         return cell;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CCellComposite shiftTo(int toColumnIndex, int toRowIndex) {
         Set<CCell> cells = getCellsShiftedTo(toColumnIndex, toRowIndex);
@@ -138,6 +170,8 @@ public class STable implements IDynamicCellContainer {
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Returns the Value at row and column. Determines the value by taking the
      * row of the model at rowIndex and:
      * <ul>
@@ -149,11 +183,8 @@ public class STable implements IDynamicCellContainer {
      * <li>The row is returned.</li>
      * </ul>
      * <p>
-     *
-     * @param toColumnIndex the column index to be shifted to
-     * @param toRowIndex    the row index to be shifted to
-     * @return the Value at row and column.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Set<CCell> getCellsShiftedTo(int toColumnIndex, int toRowIndex) {
         for (DynamicCCellReference cell : cellReferences) {
@@ -170,6 +201,7 @@ public class STable implements IDynamicCellContainer {
         for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++) {
             CFormat columnFormat = CFormat.combine(columns.get(columnIndex).getFormat(), tableFormat);
             for (int rowIndex = 1; rowIndex <= model.getRowCount(); rowIndex++) {
+                //noinspection rawtypes
                 SAction action = columns.get(columnIndex).getAction();
                 Object row = model.getRow(rowIndex - 1); // Shift the model
                 Object value = row;
@@ -182,9 +214,9 @@ public class STable implements IDynamicCellContainer {
                     rowFormat = CFormat.combine(action.getFormat(columnIndex, rowIndex, columnIndex + toColumnIndex, rowIndex + toRowIndex, row), rowFormat);
                 } // TODO: Remove here and build a default Model on setModel
                 else if (row instanceof List) {
-                    value = ((List) row).get(columnIndex);
-                } else if (row instanceof Object[]) {
-                    value = ((Object[]) row)[columnIndex];
+                    value = ((List<?>) row).get(columnIndex);
+                } else if (row instanceof Object[] rowValue) {
+                    value = rowValue[columnIndex];
                 }
                 ccells.add(new CCell(columnIndex + toColumnIndex, rowIndex + toRowIndex, value, rowFormat));
             }

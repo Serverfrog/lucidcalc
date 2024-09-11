@@ -17,7 +17,9 @@
 package de.serverfrog.lucidcalc;
 
 /**
+ * <p>IFormula interface.</p>
  *
+ * @author oliver.guenther
  */
 public interface IFormula {
 

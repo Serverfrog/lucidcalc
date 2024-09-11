@@ -20,6 +20,8 @@ import java.util.Set;
 
 /**
  * Represents something that contains cells.
+ *
+ * @author oliver.guenther
  */
 public interface IDynamicCellContainer {
 
@@ -32,10 +34,28 @@ public interface IDynamicCellContainer {
      */
     Set<CCell> getCellsShiftedTo(int columnIndex, int rowIndex);
 
+    /**
+     * <p>shiftTo.</p>
+     *
+     * @param toColumnIndex a int
+     * @param toRowIndex a int
+     * @return a {@link de.serverfrog.lucidcalc.CCellComposite} object
+     */
     CCellComposite shiftTo(int toColumnIndex, int toRowIndex);
 
+    /**
+     * <p>getRowCount.</p>
+     *
+     * @return a int
+     */
     int getRowCount();
 
+    /**
+     * <p>getColumnCount.</p>
+     *
+     * @return a int
+     */
+    @SuppressWarnings("unused")
     int getColumnCount();
 
 }

@@ -23,6 +23,8 @@ import java.util.Set;
 
 /**
  * A Composite of cells and Metainformation.
+ *
+ * @author oliver.guenther
  */
 @Getter
 public class CCellComposite {
@@ -31,16 +33,31 @@ public class CCellComposite {
     protected Set<CColumnView> columnViews;
     protected Set<CRowView> rowViews;
 
+    /**
+     * <p>Constructor for CCellComposite.</p>
+     */
     public CCellComposite() {
         cells = new HashSet<>();
         columnViews = new HashSet<>();
         rowViews = new HashSet<>();
     }
 
+    /**
+     * <p>Constructor for CCellComposite.</p>
+     *
+     * @param cells a {@link java.util.Set} object
+     */
     public CCellComposite(Set<CCell> cells) {
         this.cells = cells;
     }
 
+    /**
+     * <p>Constructor for CCellComposite.</p>
+     *
+     * @param cells a {@link java.util.Set} object
+     * @param columnViews a {@link java.util.Set} object
+     * @param rowViews a {@link java.util.Set} object
+     */
     public CCellComposite(Set<CCell> cells, Set<CColumnView> columnViews, Set<CRowView> rowViews) {
         if (cells != null) this.cells = cells;
         if (columnViews != null) this.columnViews = columnViews;

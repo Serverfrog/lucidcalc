@@ -16,13 +16,21 @@
  */
 package de.serverfrog.lucidcalc;
 
+/**
+ * <p>SActionAdapter class.</p>
+ *
+ * @author oliver.guenther
+ */
+@SuppressWarnings("unused")
 public class SActionAdapter<T> implements SAction<T> {
 
+    /** {@inheritDoc} */
     @Override
     public Object getValue(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, T lineModel) {
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public CFormat getFormat(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, T lineModel) {
         return null;

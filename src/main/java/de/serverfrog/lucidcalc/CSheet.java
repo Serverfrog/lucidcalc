@@ -20,8 +20,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * <p>CSheet class.</p>
  *
+ * @author oliver.guenther
  */
+@SuppressWarnings("unused")
 public class CSheet extends CCellComposite {
 
     @Setter
@@ -34,6 +37,12 @@ public class CSheet extends CCellComposite {
 
     private int endRowIndex = 0;
 
+    /**
+     * <p>Constructor for CSheet.</p>
+     *
+     * @param name a {@link java.lang.String} object
+     * @param containers a {@link de.serverfrog.lucidcalc.IDynamicCellContainer} object
+     */
     public CSheet(String name, IDynamicCellContainer... containers) {
         this(name);
         for (IDynamicCellContainer container : containers) {
@@ -51,6 +60,12 @@ public class CSheet extends CCellComposite {
         this.name = name;
     }
 
+    /**
+     * <p>Constructor for CSheet.</p>
+     *
+     * @param name a {@link java.lang.String} object
+     * @param columnsizes a {@link java.lang.Integer} object
+     */
     public CSheet(String name, Integer... columnsizes) {
         this.name = name;
         if (columnsizes == null) return;
@@ -60,10 +75,20 @@ public class CSheet extends CCellComposite {
         }
     }
 
+    /**
+     * <p>Constructor for CSheet.</p>
+     */
     public CSheet() {
         this("NoName");
     }
 
+    /**
+     * <p>addBelow.</p>
+     *
+     * @param columnDelta a int
+     * @param rowDelta a int
+     * @param container a {@link de.serverfrog.lucidcalc.IDynamicCellContainer} object
+     */
     public final void addBelow(int columnDelta, int rowDelta, IDynamicCellContainer container) {
         CCellComposite composite = container.shiftTo(columnDelta, endRowIndex + rowDelta);
         // TODO: Very simple inference of column sizes
@@ -73,6 +98,11 @@ public class CSheet extends CCellComposite {
         endRowIndex += rowDelta + container.getRowCount();
     }
 
+    /**
+     * <p>addBelow.</p>
+     *
+     * @param container a {@link de.serverfrog.lucidcalc.IDynamicCellContainer} object
+     */
     public final void addBelow(IDynamicCellContainer container) {
         addBelow(0, 0, container);
     }

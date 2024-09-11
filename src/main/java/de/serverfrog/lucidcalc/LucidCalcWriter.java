@@ -19,6 +19,8 @@ package de.serverfrog.lucidcalc;
 import java.io.File;
 
 /**
+ * <p>LucidCalcWriter interface.</p>
+ *
  * @author oliver.guenther
  */
 public interface LucidCalcWriter {

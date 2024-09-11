@@ -24,6 +24,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * <p>SBlock class.</p>
+ *
+ * @author oliver.guenther
+ */
+@SuppressWarnings("unused")
 public class SBlock implements IDynamicCellContainer {
 
     /**
@@ -31,7 +37,6 @@ public class SBlock implements IDynamicCellContainer {
      *  Sets a Format to be used in the whole block.
      *  <p>
      *
-     * @param format the fromat.
      */
     @Setter
     @Getter
@@ -40,6 +45,9 @@ public class SBlock implements IDynamicCellContainer {
 
     private final List<List<SCell>> cells;
 
+    /**
+     * <p>Constructor for SBlock.</p>
+     */
     public SBlock() {
         cells = new ArrayList<>();
     }
@@ -58,19 +66,27 @@ public class SBlock implements IDynamicCellContainer {
         if (newline) add();
     }
 
+    /**
+     * <p>Constructor for SBlock.</p>
+     *
+     * @param old a {@link de.serverfrog.lucidcalc.SBlock} object
+     */
     public SBlock(SBlock old) {
         this();
         if (old == null) return;
         this.format = old.format;
         for (List<SCell> oldRow : old.cells) {
             List<SCell> row = new ArrayList<>(oldRow.size());
-            for (SCell cell : oldRow) {
-                row.add(cell);
-            }
+            row.addAll(oldRow);
             this.cells.add(row);
         }
     }
 
+    /**
+     * <p>getContent.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<List<SCell>> getContent() {
         return cells;
     }
@@ -79,37 +95,40 @@ public class SBlock implements IDynamicCellContainer {
      * Adds a line of elements to the block.
      * The following logic is used:
      * <ul>
-     * <li>If an element is of type {@link SCell} it is added directly </li>
-     * <li>If an element is of anything else as {@link SCell} or {@link CFormat}
-     * but followed by {@link CFormat} a new {@link SCell} out of both is created</li>
+     * <li>If an element is of type {@link de.serverfrog.lucidcalc.SCell} it is added directly </li>
+     * <li>If an element is of anything else as {@link de.serverfrog.lucidcalc.SCell} or {@link de.serverfrog.lucidcalc.CFormat}
+     * but followed by {@link de.serverfrog.lucidcalc.CFormat} a new {@link de.serverfrog.lucidcalc.SCell} out of both is created</li>
      * <li>Everything else is only treated as an Object of data without Format information</li>
      * </ul>
      *
      * @param elems elements to be added
      */
+    @SuppressWarnings("java:S127")
     public final void add(Object... elems) {
         List<SCell> row = new ArrayList<>();
         cells.add(row);
         if (elems == null) return;
         if (elems.length == 1) {
-            if (elems[0] instanceof SCell) row.add((SCell) elems[0]);
+            if (elems[0] instanceof SCell scell) row.add(scell);
             else row.add(new SCell(elems[0]));
             return;
         }
         for (int i = 0; i < elems.length; i++) {
-            if (elems[i] instanceof SCell) row.add((SCell) elems[i]);
-            else if (((i + 1) < elems.length) && (elems[i + 1] instanceof CFormat)) {
-                row.add(new SCell(elems[i], (CFormat) elems[i + 1]));
+            if (elems[i] instanceof SCell scell) row.add(scell);
+            else if (((i + 1) < elems.length) && (elems[i + 1] instanceof CFormat cformat)) {
+                row.add(new SCell(elems[i], cformat));
                 i++;
             } else row.add(new SCell(elems[i]));
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public CCellComposite shiftTo(int columnIndex, int rowIndex) {
         return new CCellComposite(getCellsShiftedTo(columnIndex, rowIndex));
     }
 
+    /** {@inheritDoc} */
     @Override
     public Set<CCell> getCellsShiftedTo(int toColumnIndex, int toRowIndex) {
         Set<CCell> ccells = new HashSet<>();
@@ -125,11 +144,13 @@ public class SBlock implements IDynamicCellContainer {
         return ccells;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getRowCount() {
         return cells.size();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getColumnCount() {
         int count = 0;

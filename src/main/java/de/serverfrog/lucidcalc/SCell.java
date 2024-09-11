@@ -21,6 +21,8 @@ import lombok.Setter;
 
 /**
  * A simple cell without position information
+ *
+ * @author oliver.guenther
  */
 public class SCell implements CCellReference {
 
@@ -31,20 +33,33 @@ public class SCell implements CCellReference {
     @Setter
     private CCellReference reference;
 
+    /**
+     * <p>Constructor for SCell.</p>
+     *
+     * @param value a {@link java.lang.Object} object
+     */
     public SCell(Object value) {
         this.value = value;
     }
 
+    /**
+     * <p>Constructor for SCell.</p>
+     *
+     * @param value a {@link java.lang.Object} object
+     * @param format a {@link de.serverfrog.lucidcalc.CFormat} object
+     */
     public SCell(Object value, CFormat format) {
         this.format = format;
         this.value = value;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int rowIndex() {
         return reference == null ? -1 : reference.rowIndex();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int columnIndex() {
         return reference == null ? -1 : reference.columnIndex();

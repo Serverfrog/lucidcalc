@@ -16,12 +16,12 @@
  */
 package de.serverfrog.lucidcalc;
 
-import lombok.Getter;
 
 /**
+ * <p>CColumnView class.</p>
  *
+ * @author oliver.guenther
  */
-@Getter
 public record CColumnView(int columnIndex, int size) {
 
 }

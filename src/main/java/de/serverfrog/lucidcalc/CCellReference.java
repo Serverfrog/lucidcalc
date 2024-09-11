@@ -18,11 +18,23 @@ package de.serverfrog.lucidcalc;
 
 /**
  * Just the Row and the Column of a Cell. Useful for Formulas
+ *
+ * @author oliver.guenther
  */
 public interface CCellReference {
 
+    /**
+     * <p>columnIndex.</p>
+     *
+     * @return a int
+     */
     int columnIndex();
 
+    /**
+     * <p>rowIndex.</p>
+     *
+     * @return a int
+     */
     int rowIndex();
 
 }

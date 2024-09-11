@@ -32,6 +32,8 @@ import java.awt.*;
 /**
  * FormatUtil for the JExcelOffice. This utility class must be handled special. Because the JExcelApi keeps some activities static, it must be ensured,
  * that every object created for a Workbook will be dropped and recreated for another workbook. To ensure this, an instance of the utility class is needed.
+ *
+ * @author oliver.guenther
  */
 public class FormatUtil {
 
@@ -39,6 +41,12 @@ public class FormatUtil {
 
     private NumberFormat currencyEuro;
 
+    /**
+     * <p>discover.</p>
+     *
+     * @param color a {@link java.awt.Color} object
+     * @return a {@link jxl.format.Colour} object
+     */
     public Colour discover(Color color) {
         for (Colour colour : Colour.getAllColours()) {
             if (colour.getDefaultRGB().getBlue() == color.getBlue()
@@ -50,6 +58,12 @@ public class FormatUtil {
         return Colour.UNKNOWN;
     }
 
+    /**
+     * <p>discover.</p>
+     *
+     * @param horizontalAlignment a {@link de.serverfrog.lucidcalc.CFormat.HorizontalAlignment} object
+     * @return a {@link jxl.format.Alignment} object
+     */
     public Alignment discover(CFormat.HorizontalAlignment horizontalAlignment) {
         return switch (horizontalAlignment) {
             case CENTER -> Alignment.CENTRE;
@@ -58,6 +72,12 @@ public class FormatUtil {
         };
     }
 
+    /**
+     * <p>discover.</p>
+     *
+     * @param verticalAlignment a {@link de.serverfrog.lucidcalc.CFormat.VerticalAlignment} object
+     * @return a {@link jxl.format.VerticalAlignment} object
+     */
     public VerticalAlignment discover(CFormat.VerticalAlignment verticalAlignment) {
         return switch (verticalAlignment) {
             case TOP -> VerticalAlignment.TOP;
@@ -66,6 +86,11 @@ public class FormatUtil {
         };
     }
 
+    /**
+     * <p>discover.</p>
+   €   * @param representation a {@link de.serverfrog.lucidcalc.CFormat.Representation} object
+     * @return a {@link jxl.biff.DisplayFormat} object
+     */
     public DisplayFormat discover(CFormat.Representation representation) {
         return switch (representation) {
             case DEFAULT -> NumberFormats.DEFAULT;
@@ -77,12 +102,18 @@ public class FormatUtil {
                 yield shortDate;
             }
             case CURRENCY_EURO -> {
-                if (currencyEuro == null) currencyEuro = new NumberFormat("#,#00.00 \u20AC", NumberFormat.COMPLEX_FORMAT);
+                if (currencyEuro == null) currencyEuro = new NumberFormat("#,#00.00 €", NumberFormat.COMPLEX_FORMAT);
                 yield currencyEuro;
             }
         };
     }
 
+    /**
+     * <p>discover.</p>
+     *
+     * @param lineStyle a {@link de.serverfrog.lucidcalc.CBorder.LineStyle} object
+     * @return a {@link jxl.format.BorderLineStyle} object
+     */
     public BorderLineStyle discover(CBorder.LineStyle lineStyle) {
         if (lineStyle == null) return BorderLineStyle.NONE;
         // This just works, because I use the same order.

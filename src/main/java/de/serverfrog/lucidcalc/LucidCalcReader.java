@@ -21,8 +21,11 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
+ * <p>LucidCalcReader interface.</p>
+ *
  * @author oliver.guenther
  */
+@SuppressWarnings("unused")
 public interface LucidCalcReader {
 
     /**
@@ -33,18 +36,48 @@ public interface LucidCalcReader {
      * @param type the Type of the column. Allowed Values: String,Double,Integer
      * @return the JExcelLucidCalcReader
      */
-    LucidCalcReader addColumn(int id, Class<? extends Object> type);
+    LucidCalcReader addColumn(int id, Class<?> type);
 
+    /**
+     * <p>getErrors.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     List<String> getErrors();
 
+    /**
+     * <p>isError.</p>
+     *
+     * @return a boolean
+     */
     boolean isError();
 
+    /**
+     * <p>isHeadline.</p>
+     *
+     * @return a boolean
+     */
     boolean isHeadline();
 
+    /**
+     * <p>setHeadline.</p>
+     *
+     * @param headline a boolean
+     */
     void setHeadline(boolean headline);
 
+    /**
+     * <p>isTrim.</p>
+     *
+     * @return a boolean
+     */
     boolean isTrim();
 
+    /**
+     * <p>setTrim.</p>
+     *
+     * @param trim a boolean
+     */
     void setTrim(boolean trim);
 
     /**
@@ -59,6 +92,14 @@ public interface LucidCalcReader {
      */
     <U> List<U> read(File file, Class<U> clazz);
 
+    /**
+     * <p>read.</p>
+     *
+     * @param is a {@link java.io.InputStream} object
+     * @param clazz a {@link java.lang.Class} object
+     * @param <U> a U class
+     * @return a {@link java.util.List} object
+     */
     <U> List<U> read(InputStream is, Class<U> clazz);
 
     /**
@@ -73,12 +114,19 @@ public interface LucidCalcReader {
      */
     <U> List<U> read(File file, U instance);
 
-    List<List<? extends Object>> read(File file);
+    /**
+     * <p>read.</p>
+     *
+     * @param file a {@link java.io.File} object
+     * @return a {@link java.util.List} object
+     */
+    List<List<?>> read(File file);
 
     /**
      * Add new Column definition for the read, all types are String
      *
      * @param columns the columns
      */
+    @SuppressWarnings("unused")
     void setColumns(int... columns);
 }

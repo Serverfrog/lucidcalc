@@ -24,6 +24,8 @@ import lombok.Getter;
  * new SFormula(CCellReference , "+", CCellReference, "+" , CellReference)
  * <p>
  * Also implements the SAction for static formulas, so it is possible to add a Formula to an STable
+ *
+ * @author oliver.guenther
  */
 @Getter
 public class SFormula implements IFormula {
@@ -37,7 +39,7 @@ public class SFormula implements IFormula {
 
     /**
      * Constructor with Formula Elements.
-     * Only Strings and DynamicRefrences are allowed.
+     * Only Strings and DynamicReferences are allowed.
      *
      * @param elems elements for the formula
      */
@@ -45,12 +47,13 @@ public class SFormula implements IFormula {
         this.elements = elems;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toRawFormula() {
         StringBuilder sb = new StringBuilder();
         for (Object elem : elements) {
             if (elem instanceof final CCellReference ref) {
-                // +1 is needed because calc allways start with 1 not with 0
+                // +1 is needed because calc always start with 1 not with 0
                 sb.append(toColumnLetter(ref.columnIndex())).append(ref.rowIndex() + 1);
             } else {
                 sb.append(elem);

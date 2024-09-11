@@ -16,15 +16,27 @@
  */
 package de.serverfrog.lucidcalc;
 
+import de.serverfrog.lucidcalc.exception.ReflectionUsageException;
+import lombok.AccessLevel;
+import lombok.Getter;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
  * Util class that contains some useful Action implementations.
+ *
+ * @author oliver.guenther
  */
+@SuppressWarnings("unused")
 public class SUtil {
 
-    private final static SAction SELF_ROW = new SAction() {
+    private SUtil() {
+        throw new IllegalAccessError("Utility class");
+    }
+
+    @Getter(AccessLevel.PUBLIC)
+    private static final SAction<?> SELF_ROW = new SAction<>() {
 
         @Override
         public Object getValue(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, Object lineModel) {
@@ -36,8 +48,8 @@ public class SUtil {
                 return "o.getClass != SFormula, but " + o;
             }
             for (Object elem : ((SFormula) o).getElements()) {
-                if (elem instanceof SSelfRowReference) {
-                    ((SSelfRowReference) elem).setRowIndex(absoluteRowIndex);
+                if (elem instanceof SSelfRowReference sselfrowreference) {
+                    sselfrowreference.setRowIndex(absoluteRowIndex);
                 }
             }
             return o;
@@ -48,7 +60,9 @@ public class SUtil {
             return null;
         }
     };
-    private final static SAction NULL = new SAction() {
+
+    @Getter(AccessLevel.PUBLIC)
+    private static final SAction<?> NULL = new SAction<>() {
 
         @Override
         public Object getValue(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, Object lineModel) {
@@ -61,25 +75,25 @@ public class SUtil {
         }
     };
 
-    public static SAction getBeanProperty(String name) {
-        return new BeanProperty(name);
+    /**
+     * <p>getBeanProperty.</p>
+     *
+     * @param name a {@link java.lang.String} object
+     * @return a {@link de.serverfrog.lucidcalc.SAction} object
+     */
+    public static SAction<?> getBeanProperty(String name) {
+        return new BeanProperty<>(name);
     }
 
-    public static SAction getSelfRow() {
-        return SELF_ROW;
-    }
 
     /**
-     * Returns an SAction that always returns null
+     * <p>getConstant.</p>
      *
-     * @return an SAction that always returns null
+     * @param constant a {@link java.lang.Object} object
+     * @return a {@link de.serverfrog.lucidcalc.SAction} object
      */
-    public static SAction getNull() {
-        return NULL;
-    }
-
-    public static SAction getConstant(final Object constant) {
-        return new SAction() {
+    public static SAction<?> getConstant(final Object constant) {
+        return new SAction<>() {
 
             @Override
             public Object getValue(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, Object lineModel) {
@@ -94,12 +108,12 @@ public class SUtil {
     }
 
     /**
-     * Creates new {@link SSelfRowReference}
+     * Creates new {@link de.serverfrog.lucidcalc.SSelfRowReference}
      *
      * @param column the column index
-     * @return new {@link SSelfRowReference}
+     * @return new {@link de.serverfrog.lucidcalc.SSelfRowReference}
      */
-    public static SSelfRowReference SR(int column) {
+    public static SSelfRowReference selfRowReference(int column) {
         return new SSelfRowReference(column);
     }
 
@@ -125,6 +139,7 @@ public class SUtil {
             return chainedValue(propertyChain.substring(dot + 1), invoke(property, main));
         }
 
+        @SuppressWarnings({"java:S3011","java:S1141","java:S1141"})
         private Object invoke(String property, Object main) {
             Method m;
             try {
@@ -141,16 +156,17 @@ public class SUtil {
                                 + property.substring(0, 1).toUpperCase()
                                 + property.substring(1));
                     } catch (Exception ex1) {
-                        throw new RuntimeException("Exeption during invoke().getMethod()", ex1);
+                        throw new ReflectionUsageException("Exception during invoke().getMethod()", ex1);
                     }
                 }
                 m.setAccessible(true);
                 return m.invoke(main);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException ex) {
-                throw new RuntimeException("Exeption during invoke()", ex);
+                throw new ReflectionUsageException("Exception during invoke()", ex);
             }
         }
 
+        @SuppressWarnings("unused")
         @Override
         public CFormat getFormat(int relativeColumnIndex, int relativeRowIndex, int absoluteColumnIndex, int absoluteRowIndex, T lineModel) {
             return null;

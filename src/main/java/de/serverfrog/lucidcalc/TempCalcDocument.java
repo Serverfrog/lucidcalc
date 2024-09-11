@@ -16,6 +16,7 @@
  */
 package de.serverfrog.lucidcalc;
 
+import de.serverfrog.lucidcalc.exception.FileException;
 import lombok.Getter;
 
 import java.io.File;
@@ -23,6 +24,8 @@ import java.io.IOException;
 
 /**
  * Represents a temporary calc document, which will be created using File.createTempFile()
+ *
+ * @author oliver.guenther
  */
 public class TempCalcDocument extends CCalcDocument {
 
@@ -30,21 +33,30 @@ public class TempCalcDocument extends CCalcDocument {
     @Getter
     private final String prefix;
 
+    /**
+     * <p>Constructor for TempCalcDocument.</p>
+     *
+     * @param prefix a {@link java.lang.String} object
+     */
     public TempCalcDocument(String prefix) {
         this.prefix = prefix;
     }
 
+    /**
+     * <p>Constructor for TempCalcDocument.</p>
+     */
     public TempCalcDocument() {
         this("aaa");
     }
 
+    /** {@inheritDoc} */
     @Override
     public File getFile() throws RuntimeException {
         if (file == null) {
             try {
                 file = File.createTempFile(prefix, ".xls");
             } catch (IOException ex) {
-                throw new RuntimeException("Execption during Tempfile creation", ex);
+                throw new FileException("Execution during Tempfile creation", ex);
             }
         }
         return file;

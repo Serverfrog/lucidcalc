@@ -16,6 +16,7 @@
  */
 package de.serverfrog.lucidcalc;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -23,24 +24,39 @@ import lombok.ToString;
 import java.awt.*;
 
 /**
+ * <p>CBorder class.</p>
  *
+ * @author oliver.guenther
  */
 @Getter
 @ToString
 @EqualsAndHashCode
+@Builder
 public class CBorder {
 
     private final Color color;
     private final LineStyle lineStyle;
+    /**
+     * <p>Constructor for CBorder.</p>
+     *
+     * @param color a {@link java.awt.Color} object
+     * @param lineStyle a {@link de.serverfrog.lucidcalc.CBorder.LineStyle} object
+     */
     public CBorder(Color color, LineStyle lineStyle) {
         this.lineStyle = lineStyle;
         this.color = color;
     }
 
+    /**
+     * <p>Constructor for CBorder.</p>
+     *
+     * @param color a {@link java.awt.Color} object
+     */
     public CBorder(Color color) {
         this(color, LineStyle.THIN);
     }
 
+    @SuppressWarnings("unused")
     public enum LineStyle {
 
         NONE, THIN, MEDIUM, DASHED, DOTTED, THICK, DOUBLE, HAIR, MEDIUM_DASHED, DASH_DOT, MEDIUM_DASH_DOT, DASH_DOT_DOT, MEDIUM_DASH_DOT_DOT, SLANTED_DASH_DOT

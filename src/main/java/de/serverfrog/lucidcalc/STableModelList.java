@@ -22,26 +22,40 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * <p>STableModelList class.</p>
  *
+ * @author oliver.guenther
  */
 public class STableModelList<T> implements STableModel {
 
     //    @NotNull
     private final List<T> rows;
 
+    /**
+     * <p>Constructor for STableModelList.</p>
+     *
+     * @param rows an array of T[] objects
+     */
     public STableModelList(T[] rows) {
         this.rows = Arrays.asList(rows);
     }
 
+    /**
+     * <p>Constructor for STableModelList.</p>
+     *
+     * @param rows a {@link java.util.Collection} object
+     */
     public STableModelList(Collection<T> rows) {
         this.rows = new ArrayList<>(rows);
     }
 
+    /** {@inheritDoc} */
     @Override
     public T getRow(int row) {
         return rows.get(row);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getRowCount() {
         return rows.size();

@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * <p>Abstract CCalcDocument class.</p>
  *
+ * @author oliver.guenther
  */
 @Getter
 public abstract class CCalcDocument {
@@ -32,15 +34,29 @@ public abstract class CCalcDocument {
 //    @NotNull
     private final List<CSheet> sheets;
 
-    public CCalcDocument() {
+    /**
+     * <p>Constructor for CCalcDocument.</p>
+     */
+    protected CCalcDocument() {
         sheets = new ArrayList<>();
     }
 
+    /**
+     * <p>add.</p>
+     *
+     * @param sheet a {@link de.serverfrog.lucidcalc.CSheet} object
+     * @return a {@link de.serverfrog.lucidcalc.CCalcDocument} object
+     */
     public CCalcDocument add(CSheet sheet) {
         sheets.add(sheet);
         return this;
     }
 
+    /**
+     * <p>getFile.</p>
+     *
+     * @return a {@link java.io.File} object
+     */
     public abstract File getFile();
 
 }

@@ -16,7 +16,6 @@
  */
 package de.serverfrog.lucidcalc;
 
-import lombok.Getter;
 
 /**
  * The RowView
@@ -25,8 +24,8 @@ import lombok.Getter;
  *                 Get the value of rowIndex
  * @param size     -- GETTER --
  *                 Get the value of rowSize
+ * @author oliver.guenther
  */
-@Getter
 public record CRowView(int rowIndex, int size) {
 
 

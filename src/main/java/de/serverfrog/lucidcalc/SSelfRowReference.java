@@ -20,6 +20,8 @@ import lombok.Setter;
 
 /**
  * CellReference implementation there the row can be changed by an Action
+ *
+ * @author oliver.guenther
  */
 public class SSelfRowReference implements CCellReference {
 
@@ -27,15 +29,22 @@ public class SSelfRowReference implements CCellReference {
     @Setter
     private int rowIndex;
 
+    /**
+     * <p>Constructor for SSelfRowReference.</p>
+     *
+     * @param columnIndex a int
+     */
     public SSelfRowReference(int columnIndex) {
         this.columnIndex = columnIndex;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int columnIndex() {
         return columnIndex;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int rowIndex() {
         return rowIndex;

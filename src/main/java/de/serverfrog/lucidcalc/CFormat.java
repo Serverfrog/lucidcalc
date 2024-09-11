@@ -17,6 +17,7 @@
 package de.serverfrog.lucidcalc;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.awt.*;
@@ -34,8 +35,11 @@ import java.util.Objects;
  * <li><i>Default</i></li>
  * </ul>
  * Null values mean no override.
+ *
+ * @author oliver.guenther
  */
 @AllArgsConstructor
+@Builder
 public class CFormat {
 
     @Getter
@@ -66,87 +70,6 @@ public class CFormat {
     private final CBorder border;
 
     private final Boolean wrap;
-
-
-    public CFormat(FontStyle style, Color foreground, Color background, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment) {
-        this(null, null, style, foreground, background, horizontalAlignment, verticalAlignment, null, null, null);
-    }
-
-    public CFormat(FontStyle style, Color foreground, Color background, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Representation representation, CBorder border) {
-        this(null, null, style, foreground, background, horizontalAlignment, verticalAlignment, representation, border, null);
-    }
-
-    public CFormat(FontStyle style, Color foreground, Color background, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Representation representation) {
-        this(null, null, style, foreground, background, horizontalAlignment, verticalAlignment, representation, null, null);
-    }
-
-    public CFormat(FontStyle style, Color foreground, Color background, HorizontalAlignment horizontalAlignment, CBorder border) {
-        this(null, null, style, foreground, background, horizontalAlignment, null, null, border, null);
-    }
-
-    public CFormat(FontStyle style, Representation representation) {
-        this(null, null, style, null, null, null, null, representation, null, null);
-    }
-
-    public CFormat(Color foreground, Color background) {
-        this(null, null, null, foreground, background, null, null, null, null, null);
-    }
-
-    public CFormat(Color foreground, Color background, HorizontalAlignment horizontalAlignment) {
-        this(null, null, null, foreground, background, horizontalAlignment, null, null, null, null);
-    }
-
-    public CFormat(Color foreground, Color background, CBorder border) {
-        this(null, null, null, foreground, background, null, null, null, border, null);
-    }
-
-    public CFormat(String name, int size) {
-        this(name, size, null, null, null, null, null, null, null, null);
-    }
-
-    public CFormat(String name, int size, CBorder border) {
-        this(name, size, null, null, null, null, null, null, border, null);
-    }
-
-    public CFormat(FontStyle fontStyle) {
-        this(null, null, fontStyle, null, null, null, null, null, null, null);
-    }
-
-    public CFormat(CBorder border) {
-        this(null, null, null, null, null, null, null, null, border, null);
-    }
-
-    public CFormat(HorizontalAlignment horizontalAlignment, Representation representation) {
-        this(null, null, null, null, null, horizontalAlignment, null, representation, null, null);
-    }
-
-    public CFormat(HorizontalAlignment horizontalAlignment) {
-        this(null, null, null, null, null, horizontalAlignment, null, null, null, null);
-    }
-
-    public CFormat(HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment) {
-        this(null, null, null, null, null, horizontalAlignment, verticalAlignment, null, null, null);
-    }
-
-    public CFormat(HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, CBorder border) {
-        this(null, null, null, null, null, horizontalAlignment, verticalAlignment, null, border, null);
-    }
-
-    public CFormat(HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Boolean wrap) {
-        this(null, null, null, null, null, horizontalAlignment, verticalAlignment, null, null, wrap);
-    }
-
-    public CFormat(HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, CBorder border, Boolean wrap) {
-        this(null, null, null, null, null, horizontalAlignment, verticalAlignment, null, border, wrap);
-    }
-
-    public CFormat(HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, Representation representation, CBorder border, Boolean wrap) {
-        this(null, null, null, null, null, horizontalAlignment, verticalAlignment, representation, border, wrap);
-    }
-
-    public CFormat(Representation representation) {
-        this(null, null, null, null, null, null, null, representation, null, null);
-    }
 
     /**
      * Fills values in the primary format which are null with values of the secondary format
@@ -183,10 +106,16 @@ public class CFormat {
         );
     }
 
+    /**
+     * <p>isWrap.</p>
+     *
+     * @return a {@link java.lang.Boolean} object
+     */
     public Boolean isWrap() {
         return wrap;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
@@ -204,6 +133,7 @@ public class CFormat {
         return Objects.equals(this.wrap, other.wrap);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -220,6 +150,7 @@ public class CFormat {
         return hash;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "CFormat{" + "name=" + name + ", size=" + size + ", style=" + style + ", foreground=" + foreground + ", background=" + background + ", horizontalAlignment=" + horizontalAlignment + ", verticalAlignment=" + verticalAlignment + ", representation=" + representation + ", border=" + border + ", wrap=" + wrap + '}';

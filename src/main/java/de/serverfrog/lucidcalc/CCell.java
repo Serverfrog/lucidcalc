@@ -19,8 +19,11 @@ package de.serverfrog.lucidcalc;
 import lombok.Getter;
 
 /**
+ * <p>CCell class.</p>
  *
+ * @author oliver.guenther
  */
+@SuppressWarnings("unused")
 public class CCell implements CCellReference {
 
     private final int columnIndex;
@@ -30,6 +33,14 @@ public class CCell implements CCellReference {
     @Getter
     private final CFormat format;
 
+    /**
+     * <p>Constructor for CCell.</p>
+     *
+     * @param columnIndex a int
+     * @param rowIndex a int
+     * @param value a {@link java.lang.Object} object
+     * @param format a {@link de.serverfrog.lucidcalc.CFormat} object
+     */
     public CCell(int columnIndex, int rowIndex, Object value, CFormat format) {
         this.columnIndex = columnIndex;
         this.rowIndex = rowIndex;
@@ -37,20 +48,30 @@ public class CCell implements CCellReference {
         this.format = format;
     }
 
+    /**
+     * <p>Constructor for CCell.</p>
+     *
+     * @param columnIndex a int
+     * @param rowIndex a int
+     * @param value a {@link java.lang.Object} object
+     */
     public CCell(int columnIndex, int rowIndex, Object value) {
-        this(rowIndex, columnIndex, value, null);
+        this(columnIndex,rowIndex, value, null);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int columnIndex() {
         return columnIndex;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int rowIndex() {
         return rowIndex;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
@@ -60,6 +81,7 @@ public class CCell implements CCellReference {
         return this.columnIndex == other.columnIndex;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -68,6 +90,7 @@ public class CCell implements CCellReference {
         return hash;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "CCell{" + "columnIndex=" + columnIndex + ", rowIndex=" + rowIndex + ", value=" + value + ", format=" + format + '}';

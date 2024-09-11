@@ -23,6 +23,8 @@ import de.serverfrog.lucidcalc.jexcel.JExcelWriter;
 
 /**
  * Generator
+ *
+ * @author oliver.guenther
  */
 public abstract class LucidCalc {
 
@@ -31,6 +33,7 @@ public abstract class LucidCalc {
 
     /**
      * Create the specific Backend for the given Argument
+     *
      * @param backend is the Backend which should be used
      * @return the implemented LucidCalcWriter or an IllegalArgumentException if the Backend is not implemented
      */
@@ -38,12 +41,12 @@ public abstract class LucidCalc {
         return switch (backend) {
             case JEXCEL -> new JExcelWriter();
             case APACHE_POI -> new ApachePoiWriter();
-            default -> throw new IllegalArgumentException("Unknown backend: " + backend);
         };
     }
 
     /**
      * Create the specific Backend for the given Argument
+     *
      * @param backend is the Backend which should be used
      * @return the implemented LucidCalcReader or an IllegalArgumentException if the Backend is not implemented
      */
@@ -51,7 +54,6 @@ public abstract class LucidCalc {
         return switch (backend) {
             case JEXCEL -> new JExcelReader();
             case APACHE_POI -> new ApachePoiReader();
-            default -> throw new IllegalArgumentException("Unknown backend: " + backend);
         };
     }
 
