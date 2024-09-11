@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"eu.ggnet.lucidcalc"},{"l":"eu.ggnet.lucidcalc.jexcel"}];updateSearchResults();
